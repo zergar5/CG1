@@ -10,7 +10,7 @@ public class Point : IPrimitive
     public double X { get; }
     public double Y { get; }
 
-    private float _size = 1;
+    private float _size = 10;
     private Color _color = Color.FromArgb(1, 0, 0, 0);
     private double _tX;
     private double _tY;
@@ -58,7 +58,7 @@ public class Point : IPrimitive
 
     public void Highlight(OpenGL gl)
     {
-        Draw(gl, _size + 4, Color.FromArgb(255, 0, 0, 0));
+        Draw(gl, _size + 4, Color.FromArgb(_color.A, 0, 0, 0));
     }
 
     public void Move(double x, double y)
@@ -84,10 +84,10 @@ public class Point : IPrimitive
 
     public void ChangeColor(short a, short r, short g, short b)
     {
-        _color.A += (byte)(_color.A + a);
+        _color.A = (byte)(_color.A + a);
         _color.R = (byte)(_color.R + r);
-        _color.G += (byte)(_color.G + g);
-        _color.B += (byte)(_color.B + b);
+        _color.G = (byte)(_color.G + g);
+        _color.B = (byte)(_color.B + b);
     }
 
     public void SetSize(float size)
@@ -107,11 +107,13 @@ public class Point : IPrimitive
 
     public bool Contains(System.Windows.Point point)
     {
-        return X - _size <= point.X && Y - _size <= point.Y && X + _size >= point.X && Y + _size >= point.Y;
+        var x = X + _tX;
+        var y = Y + _tY;
+        return x - _size <= point.X && y - _size <= point.Y && x + _size >= point.X && y + _size >= point.Y;
     }
 
     public IPrimitive Clone()
     {
-        return new Point(X, Y, _size, _color);
+        return new Point(X + _tX, Y + _tY, _size, _color);
     }
 }

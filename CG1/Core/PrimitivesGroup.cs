@@ -75,6 +75,8 @@ public class PrimitivesGroup
 
     public PrimitivesGroup Clone()
     {
-        return new PrimitivesGroup(_primitives.ToList());
+        return new PrimitivesGroup(_primitives.Select(x => x.Clone()).ToList());
     }
+
+    public IEnumerator<IPrimitive> GetEnumerator() => ((IEnumerable<IPrimitive>)_primitives).GetEnumerator();
 }

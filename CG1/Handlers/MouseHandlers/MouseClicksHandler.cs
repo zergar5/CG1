@@ -14,19 +14,23 @@ public class MouseClicksHandler
         _primitivesGroups = primitivesGroups;
     }
 
+    public int AddGroup()
+    {
+        _primitivesGroups.Add(new PrimitivesGroup());
+
+        return _primitivesGroups.Count - 1;
+    }
+
     public int AddPrimitive(System.Windows.Point position, int currentGroupIndex)
     {
-        var currentPrimitiveIndex = 0;
-        if (_primitivesGroups.Count - 1 >= currentGroupIndex) 
-            currentPrimitiveIndex = _primitivesGroups[currentGroupIndex].Count + 1;
-        else
+        if (_primitivesGroups.Count == 0)
         {
             _primitivesGroups.Add(new PrimitivesGroup());
         }
 
         _primitivesGroups[currentGroupIndex].Add(new Point(position.X, position.Y, 10, Color.FromArgb(255, 255, 0, 0)));
 
-        return currentPrimitiveIndex;
+        return _primitivesGroups[currentGroupIndex].Count - 1;
     }
 
     public (int, int) FindPrimitive(System.Windows.Point point)
