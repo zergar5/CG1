@@ -53,6 +53,14 @@ public class PrimitivesGroup
         }
     }
 
+    public void Rotate(double angle)
+    {
+        foreach (var primitive in _primitives)
+        {
+            primitive.Rotate(angle);
+        }
+    }
+
     public void ChangeColor(short a, short r, short g, short b)
     {
         foreach (var primitive in _primitives)
@@ -74,6 +82,14 @@ public class PrimitivesGroup
         foreach (var primitive in _primitives)
         {
             primitive.MakeNonTransparent();
+        }
+    }
+
+    public void ChangeSize(float size)
+    {
+        foreach (var primitive in _primitives)
+        {
+            primitive.ChangeSize(size);
         }
     }
 

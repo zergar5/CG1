@@ -14,6 +14,7 @@ public class Point : IPrimitive
     private Color _color = Color.FromArgb(255, 255, 0, 0);
     private double _tX;
     private double _tY;
+    private double _angle;
 
     public Point() { }
 
@@ -33,27 +34,55 @@ public class Point : IPrimitive
         _color = color;
     }
 
+    public Point(double x, double y, double angle) : this(x, y)
+    {
+        _angle = angle;
+    }
+
     public Point(double x, double y, float size, Color color) : this(x, y, size)
     {
         _color = color;
     }
 
+    public Point(double x, double y, float size, double angle) : this(x, y, size)
+    {
+        _angle = angle;
+    }
+
+    public Point(double x, double y, Color color, double angle) : this(x, y, color)
+    {
+        _angle = angle;
+    }
+
+    public Point(double x, double y, float size, Color color, double angle) : this(x, y, size, color)
+    {
+        _angle = angle;
+    }
+
     public void Draw(OpenGL gl)
     {
+        gl.PushMatrix();
+        gl.Translate(X, Y, 0d);
+        //gl.Rotate(_angle, 0d, 0d, 1d);
         gl.Color(_color.R, _color.G, _color.B, _color.A);
         gl.PointSize(_size);
         gl.Begin(OpenGL.GL_POINTS);
-        gl.Vertex(X + _tX, Y + _tY, 0d);
+        gl.Vertex(_tX, _tY, 0d);
         gl.End();
+        gl.PopMatrix();
     }
 
     public void Draw(OpenGL gl, float size, Color color)
     {
+        gl.PushMatrix();
+        gl.Translate(X, Y, 0d);
+        //gl.Rotate(_angle, 0d, 0d, 1d);
         gl.Color(color.R, color.G, color.B, color.A);
         gl.PointSize(size);
         gl.Begin(OpenGL.GL_POINTS);
-        gl.Vertex(X + _tX, Y + _tY, 0d);
+        gl.Vertex(_tX, _tY, 0d);
         gl.End();
+        gl.PopMatrix();
     }
 
     public void Highlight(OpenGL gl)
@@ -67,9 +96,9 @@ public class Point : IPrimitive
         _tY += y;
     }
 
-    public void Rotate(OpenGL gl, double angle)
+    public void Rotate(double angle)
     {
-        gl.Rotate(angle, 1d, 1d, 0d);
+        _angle += angle;
     }
 
     public void SetColor(byte a, byte r, byte g, byte b)
@@ -117,10 +146,11 @@ public class Point : IPrimitive
 
     public void Reset()
     {
-        _tX = 0;
-        _tY = 0;
-        _size = 10;
+        _tX = 0d;
+        _tY = 0d;
+        _size = 10f;
         _color = Color.FromArgb(255, 255, 0, 0);
+        _angle = 0d;
     }
 
     public bool Contains(System.Windows.Point point)

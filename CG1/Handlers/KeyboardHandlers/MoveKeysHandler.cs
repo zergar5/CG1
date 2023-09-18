@@ -25,4 +25,14 @@ public class MoveKeysHandler
     {
         TemporaryGroup.Move(tX, tY);
     }
+
+    public void RotatePrimitive(double angle)
+    {
+        TemporaryPrimitive.Rotate(angle);
+    }
+
+    public void RotatePrimitivesGroup(double angle)
+    {
+        TemporaryGroup.Rotate(angle);
+    }
 }
