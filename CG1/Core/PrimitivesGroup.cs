@@ -29,16 +29,6 @@ public class PrimitivesGroup
         set => _primitives[index] = value;
     }
 
-    public void Add(IPrimitive primitive)
-    {
-        _primitives.Add(primitive);
-    }
-
-    public void RemoveAt(int index)
-    {
-        _primitives.RemoveAt(index);
-    }
-
     public void Draw(OpenGL openGl)
     {
         foreach (var primitive in _primitives)
@@ -63,14 +53,56 @@ public class PrimitivesGroup
         }
     }
 
-    public bool Contains(Point point)
+    public void ChangeColor(short a, short r, short g, short b)
     {
-        return _primitives.Any(p => p.Contains(point));
+        foreach (var primitive in _primitives)
+        {
+            primitive.ChangeColor(a, r, g, b);
+        }
+    }
+
+    public void MakeTransparent()
+    {
+        foreach (var primitive in _primitives)
+        {
+            primitive.MakeTransparent();
+        }
+    }
+
+    public void MakeNonTransparent()
+    {
+        foreach (var primitive in _primitives)
+        {
+            primitive.MakeNonTransparent();
+        }
+    }
+
+    public void Reset()
+    {
+        foreach (var primitive in _primitives)
+        {
+            primitive.Reset();
+        }
+    }
+
+    public void Add(IPrimitive primitive)
+    {
+        _primitives.Add(primitive);
+    }
+
+    public void RemoveAt(int index)
+    {
+        _primitives.RemoveAt(index);
     }
 
     public int FindIndex(Point point)
     {
         return _primitives.FindIndex(p => p.Contains(point));
+    }
+
+    public bool Contains(Point point)
+    {
+        return _primitives.Any(p => p.Contains(point));
     }
 
     public PrimitivesGroup Clone()

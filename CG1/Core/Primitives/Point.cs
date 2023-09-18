@@ -11,7 +11,7 @@ public class Point : IPrimitive
     public double Y { get; }
 
     private float _size = 10;
-    private Color _color = Color.FromArgb(1, 0, 0, 0);
+    private Color _color = Color.FromArgb(255, 255, 0, 0);
     private double _tX;
     private double _tY;
 
@@ -90,6 +90,16 @@ public class Point : IPrimitive
         _color.B = (byte)(_color.B + b);
     }
 
+    public void MakeTransparent()
+    {
+        _color.A = 122;
+    }
+
+    public void MakeNonTransparent()
+    {
+        _color.A = 255;
+    }
+
     public void SetSize(float size)
     {
         _size = size;
@@ -103,6 +113,14 @@ public class Point : IPrimitive
     public void ChangeSize(float size)
     {
         _size += size;
+    }
+
+    public void Reset()
+    {
+        _tX = 0;
+        _tY = 0;
+        _size = 10;
+        _color = Color.FromArgb(255, 255, 0, 0);
     }
 
     public bool Contains(System.Windows.Point point)

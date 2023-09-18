@@ -23,11 +23,6 @@ public class MouseClicksHandler
 
     public int AddPrimitive(System.Windows.Point position, int currentGroupIndex)
     {
-        if (_primitivesGroups.Count == 0)
-        {
-            _primitivesGroups.Add(new PrimitivesGroup());
-        }
-
         _primitivesGroups[currentGroupIndex].Add(new Point(position.X, position.Y, 10, Color.FromArgb(255, 255, 0, 0)));
 
         return _primitivesGroups[currentGroupIndex].Count - 1;

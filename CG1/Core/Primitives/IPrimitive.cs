@@ -14,9 +14,12 @@ public interface IPrimitive
     public void SetColor(byte a, byte r, byte g, byte b);
     public Color GetColor();
     public void ChangeColor(short a, short r, short g, short b);
+    public void MakeTransparent();
+    public void MakeNonTransparent();
     public void SetSize(float size);
     public float GetSize();
     public void ChangeSize(float size);
+    public void Reset();
     public bool Contains(System.Windows.Point point);
     public IPrimitive Clone();
 }
