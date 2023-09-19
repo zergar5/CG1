@@ -7,39 +7,66 @@
         xmlns:local="clr-namespace:CG1"
         mc:Ignorable="d"
         KeyDown="GlWindowOnKeyDown"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="540" Width="960" >
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="145*"></RowDefinition>
-            <RowDefinition Height="53*"></RowDefinition>
-            <RowDefinition Height="57*"/>
-            <RowDefinition Height="51*"/>
-            <RowDefinition Height="128*"></RowDefinition>
+            <RowDefinition Height="27*"/>
+            <RowDefinition Height="27*"/>
+            <RowDefinition Height="54*"/>
+            <RowDefinition Height="54*"/>
+            <RowDefinition Height="54*"/>
+            <RowDefinition Height="54*"/>
+            <RowDefinition Height="54*"/>
+            <RowDefinition Height="27*"/>
+            <RowDefinition Height="27*"/>
+            <RowDefinition Height="27*"/>
+            <RowDefinition Height="27*"/>
+            <RowDefinition Height="27*"/>
+            <RowDefinition Height="27*"/>
+            <RowDefinition Height="27*"/>
+            <RowDefinition Height="27*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="424*"></ColumnDefinition>
-            <ColumnDefinition Width="0*"/>
-            <ColumnDefinition Width="0*"></ColumnDefinition>
-            <ColumnDefinition Width="53*"></ColumnDefinition>
-            <ColumnDefinition Width="87*"/>
-            <ColumnDefinition Width="46*"/>
-            <ColumnDefinition Width="42*"/>
-            <ColumnDefinition Width="87*"/>
-            <ColumnDefinition Width="61*"/>
+            <ColumnDefinition Width="640*"/>
+            <ColumnDefinition Width="65*"/>
+            <ColumnDefinition Width="65*"/>
+            <ColumnDefinition Width="65*"/>
+            <ColumnDefinition Width="65*"/>
+            <ColumnDefinition Width="60*"/>
+
         </Grid.ColumnDefinitions>
         <sharpGL:OpenGLControl x:Name="glWindow" OpenGLDraw="OpenGLDraw" OpenGLInitialized="OpenGLInitialized" Resized="OpenGLControlResized"
                                MouseDown="GlWindowOnMouseClick"
                                KeyDown="GlWindowOnKeyDown"
-                               Grid.Column="0" Grid.RowSpan="5" Grid.Row="0" />
-        <Button Content="Button" Grid.Column="5" Grid.ColumnSpan="2" Margin="0,145,0,0" Grid.RowSpan="2"/>
-        <Button Content="Button" Grid.Column="4" Grid.Row="1" Grid.RowSpan="2" Margin="0,53,0,0"/>
-        <Button Content="Button" Grid.Column="7" Grid.Row="1" Grid.RowSpan="2" Margin="0,53,0,0"/>
-        <Button Content="Button" Grid.Column="3" Grid.Row="2" Margin="0,57,0,0" Grid.RowSpan="2"/>
-        <Label Grid.Column="4" Content="Label" HorizontalAlignment="Center" VerticalAlignment="Center" Height="25" Width="37"/>
-        <Label Grid.Column="5" Content="Label" HorizontalAlignment="Left" Margin="15,73,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2" Height="26" Width="38"/>
-        <Label Grid.Column="7" Content="Label" HorizontalAlignment="Center" VerticalAlignment="Center" Height="25" Width="37"/>
-        <Button Grid.Column="7" Content="Button" HorizontalAlignment="Left" Margin="31,73,0,0" Grid.Row="4" VerticalAlignment="Top" Height="20" Width="40"/>
-        <Button Grid.Column="4" Content="Button" HorizontalAlignment="Center" Margin="0,58,0,0" Grid.Row="4" VerticalAlignment="Top" RenderTransformOrigin="0.5,0.5" Height="20" Width="39"/>
+                               Grid.Column="0" Grid.Row="0" Grid.RowSpan="15"/>
+        <Button x:Name="AddGroupButton" Content="Add group" Grid.Column="1" Grid.Row="0" Click="AddGroupButton_OnClick"/>
+        <Button x:Name="DeleteLastButton" Content="Delete last" Grid.Column="1" Grid.Row="1" Click="DeleteLastButton_OnClick"/>
+        <Button x:Name="DeleteButton" Content="Delete" Grid.Column="1" Grid.Row="1" Visibility="Hidden" Click="DeleteButton_OnClick"/>
+        <Button x:Name="PreviousGroupButton" Content="Previous group" Grid.Column="2" Grid.Row="5" FontSize="9" Click="PreviousGroupButton_OnClick"/>
+        <Button x:Name="NextGroupButton" Content="Next group" Grid.Column="4" Grid.Row="5" FontSize="9" Click="NextGroupButton_OnClick"/>
+        <Button x:Name="PreviousPrimitiveButton" Content="Previous primitive" Grid.Column="3" Grid.Row="5" FontSize="8" Visibility="Hidden" Click="PreviousPrimitiveButton_OnClick"/>
+        <Button x:Name="NextPrimitiveButton" Content="Next primitive" Grid.Column="3" Grid.Row="6" FontSize="9" Visibility="Hidden" Click="NextPrimitiveButton_OnClick"/>
+        <Button x:Name="AcceptChangesButton" Content="Accept changes" Grid.Column="2" Grid.Row="6" FontSize="8" Visibility="Hidden" Click="AcceptChangesButton_OnClick"/>
+        <Button x:Name="CancelChangesButton" Content="Cancel changes" Grid.Column="4" Grid.Row="6" FontSize="9" Visibility="Hidden" Click="CancelChangesButton_OnClick"/>
+        <Button x:Name="UpButton" Content="Up" Grid.Column="3" Grid.Row="8" Visibility="Hidden" Click="UpButton_OnClick"/>
+        <Button x:Name="LeftButton" Content="Left" Grid.Column="2" Grid.Row="9" Visibility="Hidden" Click="LeftButton_OnClick"/>
+        <Button x:Name="DownButton" Content="Down" Grid.Column="3" Grid.Row="10" Visibility="Hidden" Click="DownButton_OnClick"/>
+        <Button x:Name="RightButton" Content="Right" Grid.Column="4" Grid.Row="9" Visibility="Hidden" Click="RightButton_OnClick"/>
+        <Label x:Name="RLabel" Content="R" Grid.Column="2" Grid.Row="11" Visibility="Hidden" Foreground="Red"/>
+        <Button x:Name="RPlusButton" Content="+" Grid.Column="3" Grid.Row="11" Visibility="Hidden" Click="RPlusButton_OnClick"/>
+        <Button x:Name="RMinusButton" Content="-" Grid.Column="4" Grid.Row="11" Visibility="Hidden" Click="RMinusButton_OnClick"/>
+        <Label x:Name="GLabel" Content="G" Grid.Column="2" Grid.Row="12" Visibility="Hidden" Foreground="Green"/>
+        <Button x:Name="GPlusButton" Content="+" Grid.Column="3" Grid.Row="12" Visibility="Hidden" Click="GPlusButton_OnClick"/>
+        <Button x:Name="GMinusButton" Content="-" Grid.Column="4" Grid.Row="12" Visibility="Hidden" Click="GMinusButton_OnClick"/>
+        <Label x:Name="BLabel" Content="B" Grid.Column="2" Grid.Row="13" Visibility="Hidden" Foreground="Blue"/>
+        <Button x:Name="BPlusButton" Content="+" Grid.Column="3" Grid.Row="13" Visibility="Hidden" Click="BPlusButton_OnClick"/>
+        <Button x:Name="BMinusButton" Content="-" Grid.Column="4" Grid.Row="13" Visibility="Hidden" Click="BMinusButton_OnClick"/>
+        <Label x:Name="SizeLabel" Content="Size" Grid.Column="2" Grid.Row="14" Visibility="Hidden"/>
+        <Button x:Name="SizePlusButton" Content="+" Grid.Column="3" Grid.Row="14" Visibility="Hidden" Click="SizePlusButton_OnClick"/>
+        <Button x:Name="SizeMinusButton" Content="-" Grid.Column="4" Grid.Row="14" Visibility="Hidden" Click="SizeMinusButton_OnClick"/>
+        <Label x:Name="ModeLabel" Content="Mode" Grid.Column="1" Grid.Row="2"/>
+        <Button x:Name="PaintingButton" Content="Painting" Grid.Column="1" Grid.Row="3" Visibility="Hidden" Click="PaintingButton_OnClick"/>
+        <Button x:Name="ChangingButton" Content="Changing" Grid.Column="1" Grid.Row="3" Click="ChangingButton_OnClick"/>
 
     </Grid>
 </Window>
