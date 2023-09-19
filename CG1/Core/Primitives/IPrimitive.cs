@@ -19,7 +19,7 @@ public interface IPrimitive
     public void SetSize(float size);
     public float GetSize();
     public void ChangeSize(float size);
-    public void Reset();
+    public void CancelChanges();
     public bool Contains(System.Windows.Point point);
     public IPrimitive Clone();
 }

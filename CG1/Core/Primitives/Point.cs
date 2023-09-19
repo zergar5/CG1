@@ -7,15 +7,27 @@ namespace CG1.Core.Primitives;
 
 public class Point : IPrimitive
 {
+    private double X => _x + _tX;
+    private double Y => _y + _tY;
     private readonly double _x;
     private readonly double _y;
     private double _tX;
     private double _tY;
 
+    private float Size => _size + _tSize;
     private float _size = 10;
     private float _tSize;
 
+    private Color Color => Color.FromArgb(
+        (byte)(_color.A + _tA), (byte)(_color.R + _tR), 
+        (byte)(_color.G + _tG), (byte)(_color.B + _tB));
+    
+
     private Color _color = Color.FromArgb(255, 255, 0, 0);
+    private short _tA;
+    private short _tR;
+    private short _tG;
+    private short _tB;
 
     private double _angle;
 
@@ -67,8 +79,8 @@ public class Point : IPrimitive
         gl.PushMatrix();
         gl.Translate(_x, _y, 0d);
         //gl.Rotate(_angle, 0d, 0d, 1d);
-        gl.Color(_color.R, _color.G, _color.B, _color.A);
-        gl.PointSize(_size);
+        gl.Color(Color.R, Color.G, Color.B, Color.A);
+        gl.PointSize(Size);
         gl.Begin(OpenGL.GL_POINTS);
         gl.Vertex(_tX, _tY, 0d);
         gl.End();
@@ -90,7 +102,7 @@ public class Point : IPrimitive
 
     public void Highlight(OpenGL gl)
     {
-        Draw(gl, _size + 4, Color.FromArgb(_color.A, 0, 0, 0));
+        Draw(gl, Size + 4, Color.FromArgb(Color.A, 0, 0, 0));
     }
 
     public void Move(double x, double y)
@@ -107,19 +119,23 @@ public class Point : IPrimitive
     public void SetColor(byte a, byte r, byte g, byte b)
     {
         _color = Color.FromArgb(a, r, g, b);
+        _tA = 0;
+        _tR = 0;
+        _tG = 0;
+        _tB = 0;
     }
 
     public Color GetColor()
     {
-        return _color;
+        return Color;
     }
 
     public void ChangeColor(short a, short r, short g, short b)
     {
-        _color.A = (byte)(_color.A + a);
-        _color.R = (byte)(_color.R + r);
-        _color.G = (byte)(_color.G + g);
-        _color.B = (byte)(_color.B + b);
+        _tA += a;
+        _tR += r;
+        _tG += g;
+        _tB += b;
     }
 
     public void MakeTransparent()
@@ -135,36 +151,40 @@ public class Point : IPrimitive
     public void SetSize(float size)
     {
         _size = size;
+        _tSize = 0;
     }
 
     public float GetSize()
     {
-        return _size;
+        return Size;
     }
 
     public void ChangeSize(float size)
     {
-        _size += size;
+        _tSize += size;
     }
 
-    public void Reset()
+    public void CancelChanges()
     {
         _tX = 0d;
         _tY = 0d;
-        _size = 10f;
-        _color = Color.FromArgb(255, 255, 0, 0);
+        _tSize = 0;
+        _tA = 0;
+        _tR = 0;
+        _tG = 0;
+        _tB = 0;
         _angle = 0d;
     }
 
     public bool Contains(System.Windows.Point point)
     {
-        var x = _x + _tX;
-        var y = _y + _tY;
-        return x - _size <= point.X && y - _size <= point.Y && x + _size >= point.X && y + _size >= point.Y;
+        var x = X;
+        var y = Y;
+        return x - Size <= point.X && y - Size <= point.Y && x + Size >= point.X && y + Size >= point.Y;
     }
 
     public IPrimitive Clone()
     {
-        return new Point(_x + _tX, _y + _tY, _size, _color);
+        return new Point(X, Y, Size, Color);
     }
 }

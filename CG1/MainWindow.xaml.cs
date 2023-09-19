@@ -486,11 +486,13 @@ public partial class MainWindow : Window
                     if (_selectedGroupIndex != - 1 && _selectedPrimitiveIndex == SelectedGroup.Count)
                     {
                         SelectedGroup.Reset();
+                        ClearTemporaryGroup();
                         CreateTemporaryGroup();
                     }
                     else if(_selectedPrimitiveIndex != -1)
                     {
-                        SelectedPrimitive.Reset();
+                        SelectedPrimitive.CancelChanges();
+                        ClearTemporaryPrimitive();
                         CreateTemporaryPrimitive();
                     }
                 }

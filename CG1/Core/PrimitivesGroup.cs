@@ -97,7 +97,7 @@ public class PrimitivesGroup
     {
         foreach (var primitive in _primitives)
         {
-            primitive.Reset();
+            primitive.CancelChanges();
         }
     }
 
