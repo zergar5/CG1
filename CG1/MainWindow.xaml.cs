@@ -20,16 +20,20 @@ using CG1.Core.Primitives;
 using CG1.Handlers;
 using CG1.Handlers.KeyboardHandlers;
 using CG1.Handlers.MouseHandlers;
+using Point = System.Windows.Point;
+
 namespace CG1;
 
 public partial class MainWindow : Window
 {
+    private OpenGL _gl;
     private readonly MouseClicksHandler _mouseClicksHandler;
     private readonly MoveKeysHandler _moveKeysHandler;
     private readonly ColorKeysHandler _colorKeysHandler;
     private readonly SizeKeysHandler _sizeKeysHandler;
 
     private readonly List<PrimitivesGroup> _primitivesGroups = new();
+
     private PrimitivesGroup? SelectedGroup => _primitivesGroups[_selectedGroupIndex];
     private IPrimitive? SelectedPrimitive => SelectedGroup[_selectedPrimitiveIndex];
 
@@ -39,12 +43,7 @@ public partial class MainWindow : Window
     private int _selectedGroupIndex = 0;
     private int _selectedPrimitiveIndex = 0;
     private Mode _currentMode = Mode.Painting;
-    private double _width;
-    private double _height;
-    private double _actualWidth;
     private double _actualHeight;
-    private double _scaleX = 1;
-    private double _scaleY = 1;
 
     public MainWindow()
     {
@@ -57,10 +56,8 @@ public partial class MainWindow : Window
 
     private void OpenGLDraw(object sender, OpenGLRoutedEventArgs args)
     {
-        var gl = args.OpenGL;
-
-        gl.ClearColor(1f, 1f, 1f, 1f);
-        gl.Clear(OpenGL.GL_COLOR_BUFFER_BIT);
+        _gl.ClearColor(1f, 1f, 1f, 1f);
+        _gl.Clear(OpenGL.GL_COLOR_BUFFER_BIT);
 
         if (_primitivesGroups.Count > 0)
         {
@@ -68,55 +65,48 @@ public partial class MainWindow : Window
             {
                 if (_selectedPrimitiveIndex == SelectedGroup.Count)
                 {
-                    SelectedGroup.Highlight(gl);
+                    SelectedGroup.Highlight(_gl);
                     if (_currentMode == Mode.Changing)
                     {
-                        _temporaryGroup?.Highlight(gl);
-                        _temporaryGroup?.Draw(gl);
+                        _temporaryGroup?.Highlight(_gl);
+                        _temporaryGroup?.Draw(_gl);
                     }
                 }
                 else
                 {
                     if (_selectedPrimitiveIndex != -1)
                     {
-                        SelectedPrimitive?.Highlight(gl);
-                        _temporaryPrimitive?.Highlight(gl);
-                        _temporaryPrimitive?.Draw(gl);
+                        SelectedPrimitive?.Highlight(_gl);
+                        _temporaryPrimitive?.Highlight(_gl);
+                        _temporaryPrimitive?.Draw(_gl);
                     }
                 }
             }
 
             foreach (var primitivesGroup in _primitivesGroups)
             {
-                primitivesGroup.Draw(gl);
+                primitivesGroup.Draw(_gl);
             }
         }
 
-        gl.Flush();
+        _gl.Flush();
     }
 
     private void OpenGLInitialized(object sender, OpenGLRoutedEventArgs args)
     {
-        var gl = args.OpenGL;
+        _gl = args.OpenGL;
 
-        gl.Disable(OpenGL.GL_DEPTH_TEST);
+        _gl.Disable(OpenGL.GL_DEPTH_TEST);
 
-        gl.Enable(OpenGL.GL_BLEND);
-        gl.BlendFunc(OpenGL.GL_SRC_ALPHA, OpenGL.GL_ONE_MINUS_SRC_ALPHA);
+        _gl.Enable(OpenGL.GL_BLEND);
+        _gl.BlendFunc(OpenGL.GL_SRC_ALPHA, OpenGL.GL_ONE_MINUS_SRC_ALPHA);
     }
 
     private void OpenGLControlResized(object sender, OpenGLRoutedEventArgs args)
     {
-        _actualWidth = glWindow.ActualWidth;
         _actualHeight = glWindow.ActualHeight;
 
-        var gl = args.OpenGL;
-
-        gl.MatrixMode(OpenGL.GL_PROJECTION);
-        gl.LoadIdentity();
-        gl.Ortho(0d, _actualWidth, 0d, _actualHeight, -1d, 1d);
-        gl.MatrixMode(OpenGL.GL_MODELVIEW);
-        gl.LoadIdentity();
+        SetOrthoProjection(_gl);
 
         OpenGLDraw(sender, args);
     }
@@ -130,192 +120,74 @@ public partial class MainWindow : Window
         if (_currentMode == Mode.Painting)
         {
             if (e.ClickCount != 1) return;
-            if (_primitivesGroups.Count == 0)
-            {
-                _selectedGroupIndex = _mouseClicksHandler.AddGroup();
-            }
-
-            _selectedPrimitiveIndex = _mouseClicksHandler.AddPrimitive(position, _selectedGroupIndex);
+            AddPrimitive(position);
         }
         else if (_currentMode == Mode.Changing)
         {
             if (e.ClickCount == 1)
             {
-                var (selectedGroup, selectedPrimitive) = _mouseClicksHandler.FindPrimitive(position);
-                if (selectedGroup == -1) return;
-
-                ClearTemporaryPrimitive();
-                ClearTemporaryGroup();
-
-                _selectedGroupIndex = selectedGroup;
-                _selectedPrimitiveIndex = selectedPrimitive;
-
-                CreateTemporaryPrimitive();
+                SelectPrimitive(position);
             }
             else if (e.ClickCount == 2)
             {
-                var selectedGroupIndex = _mouseClicksHandler.FindPrimitivesGroup(position);
-                if (selectedGroupIndex == -1) return;
-
-                ClearTemporaryPrimitive();
-                ClearTemporaryGroup();
-
-                _selectedGroupIndex = selectedGroupIndex;
-                _selectedPrimitiveIndex = _primitivesGroups[_selectedGroupIndex].Count;
-
-                CreateTemporaryGroup();
+                SelectPrimitivesGroup(position);
             }
         }
-    }
-
-    private void GlWindowOnLoaded(object sender, RoutedEventArgs e)
-    {
-        _width = glWindow.ActualWidth;
-        _height = glWindow.ActualHeight;
     }
 
     private void GlWindowOnKeyDown(object sender, KeyEventArgs e)
     {
+        //Надо вынести
         if (e.Key == Key.Enter)
         {
             if (_currentMode == Mode.Painting)
             {
-                _selectedGroupIndex = _mouseClicksHandler.AddGroup();
-                _selectedPrimitiveIndex = SelectedGroup.Count;
+                AddGroup();
             }
             else if (_currentMode == Mode.Changing)
             {
-                if (_temporaryPrimitive != null)
-                {
-                    AcceptPrimitiveChanges();
-                    CreateTemporaryPrimitive();
-                }
-                else if (_temporaryGroup != null)
-                {
-                    AcceptGroupChanges();
-                    CreateTemporaryGroup();
-                }
+                AcceptChanges();
             }
         }
         else if (e.Key == Key.Left)
         {
-            if (_selectedGroupIndex > 0)
-            {
-                _selectedGroupIndex--;
-                _selectedPrimitiveIndex = SelectedGroup.Count;
-            }
-            else return;
-
-            if (_currentMode != Mode.Changing) return;
-            ClearTemporaryPrimitive();
-            ClearTemporaryGroup();
-            CreateTemporaryGroup();
+            SelectPreviousGroup();
         }
         else if (e.Key == Key.Right)
         {
-            if (_selectedGroupIndex < _primitivesGroups.Count - 1)
-            {
-                _selectedGroupIndex++;
-                _selectedPrimitiveIndex = SelectedGroup.Count;
-            }
-            else return;
-
-            if (_currentMode != Mode.Changing) return;
-            ClearTemporaryPrimitive();
-            ClearTemporaryGroup();
-            CreateTemporaryGroup();
-
+            SelectNextGroup();
         }
         else if (e.Key == Key.Up)
         {
-            if (_currentMode != Mode.Changing) return;
-            if (_selectedGroupIndex != -1 && _selectedPrimitiveIndex != -1 &&
-                _selectedPrimitiveIndex < SelectedGroup.Count - 1)
-            {
-                ClearTemporaryPrimitive();
-                ClearTemporaryGroup();
-                _selectedPrimitiveIndex++;
-                CreateTemporaryPrimitive();
-            }
+            SelectNextPrimitive();
         }
         else if (e.Key == Key.Down)
         {
-            if (_currentMode != Mode.Changing) return;
-            if (_selectedGroupIndex != -1 && _selectedPrimitiveIndex > 0)
-            {
-                ClearTemporaryPrimitive();
-                ClearTemporaryGroup();
-                _selectedPrimitiveIndex--;
-                CreateTemporaryPrimitive();
-            }
+            SelectPreviousPrimitive();
         }
         else if (e.Key == Key.W)
         {
-            if (_currentMode != Mode.Changing) return;
-            if (_selectedPrimitiveIndex == -1 || _selectedGroupIndex == -1) return;
-            if (_selectedPrimitiveIndex == SelectedGroup.Count)
-            {
-                _moveKeysHandler.MovePrimitivesGroup(0d, 5d);
-            }
-            else
-            {
-                _moveKeysHandler.MovePrimitive(0d, 5d);
-            }
+            MovePrimitiveOrGroup(0d, 5d);
         }
         else if (e.Key == Key.A)
         {
-            if (_currentMode != Mode.Changing) return;
-            if (_selectedPrimitiveIndex == -1 || _selectedGroupIndex == -1) return;
-            if (_selectedPrimitiveIndex == SelectedGroup.Count)
-            {
-                _moveKeysHandler.MovePrimitivesGroup(-5d, 0d);
-            }
-            else
-            {
-                _moveKeysHandler.MovePrimitive(-5d, 0);
-            }
+            MovePrimitiveOrGroup(-5d, 0d);
         }
         else if (e.Key == Key.S)
         {
-            if (_currentMode != Mode.Changing) return;
-            if (_selectedPrimitiveIndex == -1 || _selectedGroupIndex == -1) return;
-            if (_selectedPrimitiveIndex == SelectedGroup.Count)
-            {
-                _moveKeysHandler.MovePrimitivesGroup(0d, -5d);
-            }
-            else
-            {
-                _moveKeysHandler.MovePrimitive(0d, -5d);
-            }
+            MovePrimitiveOrGroup(0d, -5d);
         }
         else if (e.Key == Key.D)
         {
-            if (_currentMode != Mode.Changing) return;
-            if (_selectedPrimitiveIndex == -1 || _selectedGroupIndex == -1) return;
-            if (_selectedPrimitiveIndex == SelectedGroup.Count)
-            {
-                _moveKeysHandler.MovePrimitivesGroup(5d, 0);
-            }
-            else
-            {
-                _moveKeysHandler.MovePrimitive(5d, 0);
-            }
+            MovePrimitiveOrGroup(5d, 0d);
         }
         else if (e.Key == Key.P)
         {
-            if (_currentMode == Mode.Painting) return;
-            _currentMode = Mode.Painting;
-            ClearTemporaryPrimitive();
-            ClearTemporaryGroup();
-            _selectedPrimitiveIndex = _primitivesGroups[_selectedGroupIndex].Count;
+            ChangeModeToPainting();
         }
         else if (e.Key == Key.C)
         {
-            if (_currentMode == Mode.Changing) return;
-            _currentMode = Mode.Changing;
-            ClearTemporaryGroup();
-            CreateTemporaryGroup();
-            _selectedPrimitiveIndex = _primitivesGroups[_selectedGroupIndex].Count;
+            ChangeModeToChanging();
         }
         else if (e.Key == Key.R)
         {
@@ -323,25 +195,11 @@ public partial class MainWindow : Window
             if (_selectedPrimitiveIndex == -1 || _selectedGroupIndex == -1) return;
             if ((Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control)
             {
-                if (_selectedPrimitiveIndex == SelectedGroup.Count)
-                {
-                    _colorKeysHandler.ChangeGroupColor(0, -15, 0, 0);
-                }
-                else
-                {
-                    _colorKeysHandler.ChangePrimitiveColor(0, -15, 0, 0);
-                }
+                ChangeColorOfPrimitiveOrGroup(0, -15, 0, 0);
             }
             else
             {
-                if (_selectedPrimitiveIndex == SelectedGroup.Count)
-                {
-                    _colorKeysHandler.ChangeGroupColor(0, 15, 0, 0);
-                }
-                else
-                {
-                    _colorKeysHandler.ChangePrimitiveColor(0, 15, 0, 0);
-                }
+                ChangeColorOfPrimitiveOrGroup(0, 15, 0, 0);
             }
         }
         else if (e.Key == Key.G)
@@ -350,25 +208,11 @@ public partial class MainWindow : Window
             if (_selectedPrimitiveIndex == -1 || _selectedGroupIndex == -1) return;
             if ((Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control)
             {
-                if (_selectedPrimitiveIndex == SelectedGroup.Count)
-                {
-                    _colorKeysHandler.ChangeGroupColor(0, 0, -15, 0);
-                }
-                else
-                {
-                    _colorKeysHandler.ChangePrimitiveColor(0, 0, -15, 0);
-                }
+                ChangeColorOfPrimitiveOrGroup(0, 0, -15, 0);
             }
             else
             {
-                if (_selectedPrimitiveIndex == SelectedGroup.Count)
-                {
-                    _colorKeysHandler.ChangeGroupColor(0, 0, 15, 0);
-                }
-                else
-                {
-                    _colorKeysHandler.ChangePrimitiveColor(0, 0, 15, 0);
-                }
+                ChangeColorOfPrimitiveOrGroup(0, 0, 15, 0);
             }
         }
         else if (e.Key == Key.B)
@@ -377,87 +221,29 @@ public partial class MainWindow : Window
             if (_selectedPrimitiveIndex == -1 || _selectedGroupIndex == -1) return;
             if ((Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control)
             {
-                if (_selectedPrimitiveIndex == SelectedGroup.Count)
-                {
-                    _colorKeysHandler.ChangeGroupColor(0, 0, 0, -15);
-                }
-                else
-                {
-                    _colorKeysHandler.ChangePrimitiveColor(0, 0, 0, -15);
-                }
+                ChangeColorOfPrimitiveOrGroup(0, 0, 0, -15);
             }
             else
             {
-                if (_selectedPrimitiveIndex == SelectedGroup.Count)
-                {
-                    _colorKeysHandler.ChangeGroupColor(0, 0, 0, 15);
-                }
-                else
-                {
-                    _colorKeysHandler.ChangePrimitiveColor(0, 0, 0, 15);
-                }
+                ChangeColorOfPrimitiveOrGroup(0, 0, 0, 15);
             }
         }
         else if (e.Key == Key.OemPlus)
         {
-            if (_currentMode != Mode.Changing) return;
-            if (_selectedPrimitiveIndex == -1 || _selectedGroupIndex == -1) return;
-            if (_selectedPrimitiveIndex == SelectedGroup.Count)
-            {
-                _sizeKeysHandler.ChangeGroupSize(5f);
-            }
-            else
-            {
-                _sizeKeysHandler.ChangePrimitiveSize(5f);
-            }
+            ChangeSizeOfPrimitiveOrGroup(1f);
         }
         else if (e.Key == Key.OemMinus)
         {
-            if (_currentMode != Mode.Changing) return;
-            if (_selectedPrimitiveIndex == -1 || _selectedGroupIndex == -1) return;
-            if (_selectedPrimitiveIndex == SelectedGroup.Count)
-            {
-                _sizeKeysHandler.ChangeGroupSize(-5f);
-            }
-            else
-            {
-                _sizeKeysHandler.ChangePrimitiveSize(-5f);
-            }
-        }
-        else if (e.Key == Key.Q)
-        {
-            //if (_currentMode != Mode.Changing) return;
-            //if (_selectedPrimitiveIndex == SelectedGroup.Count)
-            //{
-            //    _moveKeysHandler.RotatePrimitivesGroup(5d);
-            //}
-            //else
-            //{
-            //    _moveKeysHandler.RotatePrimitive(5d);
-            //}
-        }
-        else if (e.Key == Key.E)
-        {
-            //if (_currentMode != Mode.Changing) return;
-            //if (_selectedPrimitiveIndex == SelectedGroup.Count)
-            //{
-            //    _moveKeysHandler.RotatePrimitivesGroup(-5d);
-            //}
-            //else
-            //{
-            //    _moveKeysHandler.RotatePrimitive(-5d);
-            //}
+            ChangeSizeOfPrimitiveOrGroup(-1f);
         }
         else if (e.Key == Key.N)
         {
-            var gl = glWindow.OpenGL;
-            gl.Disable(OpenGL.GL_POINT_SMOOTH);
+            _gl.Disable(OpenGL.GL_POINT_SMOOTH);
         }
         else if (e.Key == Key.M)
         {
-            var gl = glWindow.OpenGL;
-            gl.Enable(OpenGL.GL_POINT_SMOOTH);
-            gl.Hint(OpenGL.GL_POINT_SMOOTH_HINT, OpenGL.GL_NICEST);
+            _gl.Enable(OpenGL.GL_POINT_SMOOTH);
+            _gl.Hint(OpenGL.GL_POINT_SMOOTH_HINT, OpenGL.GL_NICEST);
         }
         else if (e.Key == Key.Z)
         {
@@ -465,72 +251,21 @@ public partial class MainWindow : Window
             {
                 if (_currentMode == Mode.Painting)
                 {
-                    if (_primitivesGroups.Count == 0) return;
-                    if (_primitivesGroups[^1].Count > 0)
-                    {
-                        _primitivesGroups[^1].RemoveAt(_primitivesGroups[^1].Count - 1);
-                        _selectedPrimitiveIndex = _primitivesGroups[^1].Count;
-                    }
-                    else
-                    {
-                        _primitivesGroups.RemoveAt(_primitivesGroups.Count - 1);
-                        if (_selectedGroupIndex > 0)
-                        {
-                            _selectedGroupIndex--;
-                            _selectedPrimitiveIndex = SelectedGroup.Count;
-                        }
-                    }
+                    DeleteLastGroupOrPrimitive();
                 }
                 else if (_currentMode == Mode.Changing)
                 {
-                    if (_selectedGroupIndex != - 1 && _selectedPrimitiveIndex == SelectedGroup.Count)
-                    {
-                        SelectedGroup.Reset();
-                        ClearTemporaryGroup();
-                        CreateTemporaryGroup();
-                    }
-                    else if(_selectedPrimitiveIndex != -1)
-                    {
-                        SelectedPrimitive.CancelChanges();
-                        ClearTemporaryPrimitive();
-                        CreateTemporaryPrimitive();
-                    }
+                    CancelChanges();
                 }
             }
         }
         else if (e.Key == Key.Delete)
         {
-            if (_currentMode == Mode.Changing)
-            {
-                if (_selectedPrimitiveIndex == SelectedGroup.Count)
-                {
-                    ClearTemporaryGroup();
-                    _primitivesGroups.RemoveAt(_selectedGroupIndex);
-
-                    _selectedGroupIndex = -1;
-                    _selectedPrimitiveIndex = -1;
-                }
-                else
-                {
-                    ClearTemporaryPrimitive();
-                    SelectedGroup.RemoveAt(_selectedPrimitiveIndex);
-                    _selectedPrimitiveIndex = -1;
-                }
-            }
+            DeleteSelectedGroupOrPrimitive();
         }
         else if (e.Key == Key.Escape)
         {
-            if (_currentMode != Mode.Changing) return;
-            if (_selectedPrimitiveIndex == SelectedGroup.Count)
-            {
-                ClearTemporaryGroup();
-                CreateTemporaryGroup();
-            }
-            else
-            {
-                ClearTemporaryPrimitive();
-                CreateTemporaryPrimitive();
-            }
+            Cancel();
         }
     }
 
@@ -585,5 +320,256 @@ public partial class MainWindow : Window
         if (_selectedPrimitiveIndex == -1 || _selectedGroupIndex == -1) return;
         if (_selectedPrimitiveIndex == SelectedGroup?.Count) return;
         SelectedPrimitive?.MakeNonTransparent();
+    }
+
+    private void SetOrthoProjection(OpenGL gl)
+    {
+        gl.MatrixMode(OpenGL.GL_PROJECTION);
+        gl.LoadIdentity();
+        gl.Ortho2D(0d, glWindow.ActualWidth, 0d, _actualHeight);
+        gl.MatrixMode(OpenGL.GL_MODELVIEW);
+        gl.LoadIdentity();
+    }
+
+    private void AddGroup()
+    {
+        _selectedGroupIndex = _mouseClicksHandler.AddGroup();
+        _selectedPrimitiveIndex = SelectedGroup.Count;
+    }
+
+    private void AddPrimitive(Point position)
+    {
+        if (_primitivesGroups.Count == 0)
+        {
+            _selectedGroupIndex = _mouseClicksHandler.AddGroup();
+        }
+
+        _selectedPrimitiveIndex = _mouseClicksHandler.AddPrimitive(position, _selectedGroupIndex);
+    }
+
+    private void SelectPrimitive(Point position)
+    {
+        var (selectedGroup, selectedPrimitive) = _mouseClicksHandler.FindPrimitive(position);
+        if (selectedGroup == -1) return;
+
+        ClearTemporaryPrimitive();
+        ClearTemporaryGroup();
+
+        _selectedGroupIndex = selectedGroup;
+        _selectedPrimitiveIndex = selectedPrimitive;
+
+        CreateTemporaryPrimitive();
+    }
+
+    private void SelectPrimitivesGroup(Point position)
+    {
+        var selectedGroupIndex = _mouseClicksHandler.FindPrimitivesGroup(position);
+        if (selectedGroupIndex == -1) return;
+
+        ClearTemporaryPrimitive();
+        ClearTemporaryGroup();
+
+        _selectedGroupIndex = selectedGroupIndex;
+        _selectedPrimitiveIndex = _primitivesGroups[_selectedGroupIndex].Count;
+
+        CreateTemporaryGroup();
+    }
+
+    private void AcceptChanges()
+    {
+        if (_temporaryPrimitive != null)
+        {
+            AcceptPrimitiveChanges();
+            CreateTemporaryPrimitive();
+        }
+        else if (_temporaryGroup != null)
+        {
+            AcceptGroupChanges();
+            CreateTemporaryGroup();
+        }
+    }
+
+    private void SelectPreviousGroup()
+    {
+        if (_selectedGroupIndex > 0)
+        {
+            _selectedGroupIndex--;
+            _selectedPrimitiveIndex = SelectedGroup.Count;
+        }
+        else return;
+
+        if (_currentMode != Mode.Changing) return;
+        ClearTemporaryPrimitive();
+        ClearTemporaryGroup();
+        CreateTemporaryGroup();
+    }
+
+    private void SelectNextGroup()
+    {
+        if (_selectedGroupIndex < _primitivesGroups.Count - 1)
+        {
+            _selectedGroupIndex++;
+            _selectedPrimitiveIndex = SelectedGroup.Count;
+        }
+        else return;
+
+        if (_currentMode != Mode.Changing) return;
+        ClearTemporaryPrimitive();
+        ClearTemporaryGroup();
+        CreateTemporaryGroup();
+    }
+
+    private void SelectPreviousPrimitive()
+    {
+        if (_currentMode != Mode.Changing) return;
+        if (_selectedGroupIndex != -1 && _selectedPrimitiveIndex > 0)
+        {
+            ClearTemporaryPrimitive();
+            ClearTemporaryGroup();
+            _selectedPrimitiveIndex--;
+            CreateTemporaryPrimitive();
+        }
+    }
+
+    private void SelectNextPrimitive()
+    {
+        if (_currentMode != Mode.Changing) return;
+        if (_selectedGroupIndex != -1 && _selectedPrimitiveIndex != -1 &&
+            _selectedPrimitiveIndex < SelectedGroup.Count - 1)
+        {
+            ClearTemporaryPrimitive();
+            ClearTemporaryGroup();
+            _selectedPrimitiveIndex++;
+            CreateTemporaryPrimitive();
+        }
+    }
+
+    private void MovePrimitiveOrGroup(double x, double y)
+    {
+        if (_currentMode != Mode.Changing) return;
+        if (_selectedPrimitiveIndex == -1 || _selectedGroupIndex == -1) return;
+        if (_selectedPrimitiveIndex == SelectedGroup.Count)
+        {
+            _moveKeysHandler.MovePrimitivesGroup(x, y);
+        }
+        else
+        {
+            _moveKeysHandler.MovePrimitive(x, y);
+        }
+    }
+
+    private void ChangeModeToPainting()
+    {
+        if (_currentMode == Mode.Painting) return;
+        _currentMode = Mode.Painting;
+        ClearTemporaryPrimitive();
+        ClearTemporaryGroup();
+        _selectedPrimitiveIndex = _primitivesGroups[_selectedGroupIndex].Count;
+    }
+
+    private void ChangeModeToChanging()
+    {
+        if (_currentMode == Mode.Changing) return;
+        _currentMode = Mode.Changing;
+        ClearTemporaryGroup();
+        CreateTemporaryGroup();
+        _selectedPrimitiveIndex = _primitivesGroups[_selectedGroupIndex].Count;
+    }
+
+    private void ChangeColorOfPrimitiveOrGroup(short a, short r, short g, short b)
+    {
+        if (_selectedPrimitiveIndex == SelectedGroup.Count)
+        {
+            _colorKeysHandler.ChangeGroupColor(a, r, g, b);
+        }
+        else
+        {
+            _colorKeysHandler.ChangePrimitiveColor(a, r, g, b);
+        }
+    }
+
+    private void ChangeSizeOfPrimitiveOrGroup(float size)
+    {
+        if (_currentMode != Mode.Changing) return;
+        if (_selectedPrimitiveIndex == -1 || _selectedGroupIndex == -1) return;
+        if (_selectedPrimitiveIndex == SelectedGroup.Count)
+        {
+            _sizeKeysHandler.ChangeGroupSize(size);
+        }
+        else
+        {
+            _sizeKeysHandler.ChangePrimitiveSize(size);
+        }
+    }
+
+    private void DeleteLastGroupOrPrimitive()
+    {
+        if (_primitivesGroups.Count == 0) return;
+        if (_primitivesGroups[^1].Count > 0)
+        {
+            _primitivesGroups[^1].RemoveAt(_primitivesGroups[^1].Count - 1);
+            _selectedPrimitiveIndex = _primitivesGroups[^1].Count;
+        }
+        else
+        {
+            _primitivesGroups.RemoveAt(_primitivesGroups.Count - 1);
+            if (_selectedGroupIndex > 0)
+            {
+                _selectedGroupIndex--;
+                _selectedPrimitiveIndex = SelectedGroup.Count;
+            }
+        }
+    }
+
+    private void DeleteSelectedGroupOrPrimitive()
+    {
+        if (_currentMode == Mode.Changing)
+        {
+            if (_selectedPrimitiveIndex == SelectedGroup.Count)
+            {
+                ClearTemporaryGroup();
+                _primitivesGroups.RemoveAt(_selectedGroupIndex);
+
+                _selectedGroupIndex = -1;
+                _selectedPrimitiveIndex = -1;
+            }
+            else
+            {
+                ClearTemporaryPrimitive();
+                SelectedGroup.RemoveAt(_selectedPrimitiveIndex);
+                _selectedPrimitiveIndex = -1;
+            }
+        }
+    }
+
+    private void CancelChanges()
+    {
+        if (_selectedGroupIndex != -1 && _selectedPrimitiveIndex == SelectedGroup.Count)
+        {
+            SelectedGroup.CancelChanges();
+            ClearTemporaryGroup();
+            CreateTemporaryGroup();
+        }
+        else if (_selectedPrimitiveIndex != -1)
+        {
+            SelectedPrimitive.CancelChanges();
+            ClearTemporaryPrimitive();
+            CreateTemporaryPrimitive();
+        }
+    }
+
+    private void Cancel()
+    {
+        if (_currentMode != Mode.Changing) return;
+        if (_selectedPrimitiveIndex == SelectedGroup.Count)
+        {
+            ClearTemporaryGroup();
+            CreateTemporaryGroup();
+        }
+        else
+        {
+            ClearTemporaryPrimitive();
+            CreateTemporaryPrimitive();
+        }
     }
 }

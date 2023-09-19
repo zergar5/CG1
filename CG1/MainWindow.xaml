@@ -17,24 +17,29 @@
             <RowDefinition Height="128*"></RowDefinition>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="267*"></ColumnDefinition>
-            <ColumnDefinition Width="267*"></ColumnDefinition>
-            <ColumnDefinition Width="37*"></ColumnDefinition>
-            <ColumnDefinition Width="62*"/>
-            <ColumnDefinition Width="31*"/>
-            <ColumnDefinition Width="31*"/>
-            <ColumnDefinition Width="62*"/>
-            <ColumnDefinition Width="43*"/>
+            <ColumnDefinition Width="424*"></ColumnDefinition>
+            <ColumnDefinition Width="0*"/>
+            <ColumnDefinition Width="0*"></ColumnDefinition>
+            <ColumnDefinition Width="53*"></ColumnDefinition>
+            <ColumnDefinition Width="87*"/>
+            <ColumnDefinition Width="46*"/>
+            <ColumnDefinition Width="42*"/>
+            <ColumnDefinition Width="87*"/>
+            <ColumnDefinition Width="61*"/>
         </Grid.ColumnDefinitions>
         <sharpGL:OpenGLControl x:Name="glWindow" OpenGLDraw="OpenGLDraw" OpenGLInitialized="OpenGLInitialized" Resized="OpenGLControlResized"
-                               Loaded="GlWindowOnLoaded"
                                MouseDown="GlWindowOnMouseClick"
                                KeyDown="GlWindowOnKeyDown"
-                               Grid.Column="0" Grid.ColumnSpan="2" Grid.RowSpan="5" Grid.Row="0" />
-        <Button Content="Button" Grid.Column="4" Grid.ColumnSpan="2" Margin="0,145,0,0" Grid.RowSpan="2"/>
-        <Button Content="Button" Grid.Column="3" Grid.Row="2" Grid.RowSpan="1"/>
-        <Button Content="Button" Grid.Column="6" Grid.Row="1" Grid.RowSpan="2" Margin="0,53,0,0"/>
-        <Button Content="Button" Grid.Column="4" Grid.Row="2" Grid.RowSpan="3" Grid.ColumnSpan="2" Margin="0,57,0,122"/>
+                               Grid.Column="0" Grid.RowSpan="5" Grid.Row="0" />
+        <Button Content="Button" Grid.Column="5" Grid.ColumnSpan="2" Margin="0,145,0,0" Grid.RowSpan="2"/>
+        <Button Content="Button" Grid.Column="4" Grid.Row="1" Grid.RowSpan="2" Margin="0,53,0,0"/>
+        <Button Content="Button" Grid.Column="7" Grid.Row="1" Grid.RowSpan="2" Margin="0,53,0,0"/>
+        <Button Content="Button" Grid.Column="3" Grid.Row="2" Margin="0,57,0,0" Grid.RowSpan="2"/>
+        <Label Grid.Column="4" Content="Label" HorizontalAlignment="Center" VerticalAlignment="Center" Height="25" Width="37"/>
+        <Label Grid.Column="5" Content="Label" HorizontalAlignment="Left" Margin="15,73,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2" Height="26" Width="38"/>
+        <Label Grid.Column="7" Content="Label" HorizontalAlignment="Center" VerticalAlignment="Center" Height="25" Width="37"/>
+        <Button Grid.Column="7" Content="Button" HorizontalAlignment="Left" Margin="31,73,0,0" Grid.Row="4" VerticalAlignment="Top" Height="20" Width="40"/>
+        <Button Grid.Column="4" Content="Button" HorizontalAlignment="Center" Margin="0,58,0,0" Grid.Row="4" VerticalAlignment="Top" RenderTransformOrigin="0.5,0.5" Height="20" Width="39"/>
 
     </Grid>
 </Window>

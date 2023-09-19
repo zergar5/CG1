@@ -93,7 +93,7 @@ public class PrimitivesGroup
         }
     }
 
-    public void Reset()
+    public void CancelChanges()
     {
         foreach (var primitive in _primitives)
         {
