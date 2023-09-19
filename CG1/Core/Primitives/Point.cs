@@ -7,8 +7,8 @@ namespace CG1.Core.Primitives;
 
 public class Point : IPrimitive
 {
-    public double X { get; }
-    public double Y { get; }
+    private readonly double _x;
+    private readonly double _y;
 
     private float _size = 10;
     private Color _color = Color.FromArgb(255, 255, 0, 0);
@@ -20,8 +20,8 @@ public class Point : IPrimitive
 
     public Point(double x, double y)
     {
-        X = x;
-        Y = y;
+        _x = x;
+        _y = y;
     }
 
     public Point(double x, double y, float size) : this(x, y)
@@ -62,7 +62,7 @@ public class Point : IPrimitive
     public void Draw(OpenGL gl)
     {
         gl.PushMatrix();
-        gl.Translate(X, Y, 0d);
+        gl.Translate(_x, _y, 0d);
         //gl.Rotate(_angle, 0d, 0d, 1d);
         gl.Color(_color.R, _color.G, _color.B, _color.A);
         gl.PointSize(_size);
@@ -75,7 +75,7 @@ public class Point : IPrimitive
     public void Draw(OpenGL gl, float size, Color color)
     {
         gl.PushMatrix();
-        gl.Translate(X, Y, 0d);
+        gl.Translate(_x, _y, 0d);
         //gl.Rotate(_angle, 0d, 0d, 1d);
         gl.Color(color.R, color.G, color.B, color.A);
         gl.PointSize(size);
@@ -155,13 +155,13 @@ public class Point : IPrimitive
 
     public bool Contains(System.Windows.Point point)
     {
-        var x = X + _tX;
-        var y = Y + _tY;
+        var x = _x + _tX;
+        var y = _y + _tY;
         return x - _size <= point.X && y - _size <= point.Y && x + _size >= point.X && y + _size >= point.Y;
     }
 
     public IPrimitive Clone()
     {
-        return new Point(X + _tX, Y + _tY, _size, _color);
+        return new Point(_x + _tX, _y + _tY, _size, _color);
     }
 }

@@ -25,7 +25,7 @@ public class MouseClicksHandler
     {
         _primitivesGroups[currentGroupIndex].Add(new Point(position.X, position.Y, 10, Color.FromArgb(255, 255, 0, 0)));
 
-        return _primitivesGroups[currentGroupIndex].Count - 1;
+        return _primitivesGroups[currentGroupIndex].Count;
     }
 
     public (int, int) FindPrimitive(System.Windows.Point point)

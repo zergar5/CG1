@@ -24,12 +24,12 @@ namespace CG1;
 
 public partial class MainWindow : Window
 {
-    private readonly MouseClicksHandler _mouseClicksHandler; 
+    private readonly MouseClicksHandler _mouseClicksHandler;
     private readonly MoveKeysHandler _moveKeysHandler;
     private readonly ColorKeysHandler _colorKeysHandler;
     private readonly SizeKeysHandler _sizeKeysHandler;
 
-    private readonly List<PrimitivesGroup> _primitivesGroups = new ();
+    private readonly List<PrimitivesGroup> _primitivesGroups = new();
     private PrimitivesGroup? SelectedGroup => _primitivesGroups[_selectedGroupIndex];
     private IPrimitive? SelectedPrimitive => SelectedGroup[_selectedPrimitiveIndex];
 
@@ -66,30 +66,22 @@ public partial class MainWindow : Window
         {
             if (_selectedGroupIndex != -1)
             {
-                if (_currentMode == Mode.Painting)
+                if (_selectedPrimitiveIndex == SelectedGroup.Count)
                 {
                     SelectedGroup.Highlight(gl);
-                }
-                else if(_currentMode == Mode.Changing)
-                {
-                    if (_selectedPrimitiveIndex == SelectedGroup.Count)
+                    if (_currentMode == Mode.Changing)
                     {
-                        if (_selectedGroupIndex != -1)
-                        {
-                            _temporaryGroup?.Highlight(gl);
-                            _temporaryGroup?.Draw(gl);
-                            SelectedGroup?.Highlight(gl);
-                        }
+                        _temporaryGroup?.Highlight(gl);
+                        _temporaryGroup?.Draw(gl);
                     }
-                    else
+                }
+                else
+                {
+                    if (_selectedPrimitiveIndex != -1)
                     {
-                        if (_selectedPrimitiveIndex != -1)
-                        {
-                            _temporaryPrimitive?.Highlight(gl);
-                            _temporaryPrimitive?.Draw(gl);
-                            SelectedPrimitive?.Highlight(gl);
-                            
-                        }
+                        SelectedPrimitive?.Highlight(gl);
+                        _temporaryPrimitive?.Highlight(gl);
+                        _temporaryPrimitive?.Draw(gl);
                     }
                 }
             }
@@ -135,12 +127,12 @@ public partial class MainWindow : Window
         var position = e.GetPosition(glWindow);
         position.Y = _actualHeight - position.Y;
 
-        if (_currentMode == Mode.Painting && e.ClickCount == 1)
+        if (_currentMode == Mode.Painting)
         {
+            if (e.ClickCount != 1) return;
             if (_primitivesGroups.Count == 0)
             {
-                _primitivesGroups.Add(new PrimitivesGroup());
-                _selectedGroupIndex = 0;
+                _selectedGroupIndex = _mouseClicksHandler.AddGroup();
             }
 
             _selectedPrimitiveIndex = _mouseClicksHandler.AddPrimitive(position, _selectedGroupIndex);
@@ -152,6 +144,7 @@ public partial class MainWindow : Window
                 var (selectedGroup, selectedPrimitive) = _mouseClicksHandler.FindPrimitive(position);
                 if (selectedGroup == -1) return;
 
+                ClearTemporaryPrimitive();
                 ClearTemporaryGroup();
 
                 _selectedGroupIndex = selectedGroup;
@@ -165,6 +158,7 @@ public partial class MainWindow : Window
                 if (selectedGroupIndex == -1) return;
 
                 ClearTemporaryPrimitive();
+                ClearTemporaryGroup();
 
                 _selectedGroupIndex = selectedGroupIndex;
                 _selectedPrimitiveIndex = _primitivesGroups[_selectedGroupIndex].Count;
@@ -184,7 +178,11 @@ public partial class MainWindow : Window
     {
         if (e.Key == Key.Enter)
         {
-            if(_currentMode == Mode.Painting) _selectedGroupIndex = _mouseClicksHandler.AddGroup();
+            if (_currentMode == Mode.Painting)
+            {
+                _selectedGroupIndex = _mouseClicksHandler.AddGroup();
+                _selectedPrimitiveIndex = SelectedGroup.Count;
+            }
             else if (_currentMode == Mode.Changing)
             {
                 if (_temporaryPrimitive != null)
@@ -192,7 +190,7 @@ public partial class MainWindow : Window
                     AcceptPrimitiveChanges();
                     CreateTemporaryPrimitive();
                 }
-                if (_temporaryGroup != null)
+                else if (_temporaryGroup != null)
                 {
                     AcceptGroupChanges();
                     CreateTemporaryGroup();
@@ -204,11 +202,12 @@ public partial class MainWindow : Window
             if (_selectedGroupIndex > 0)
             {
                 _selectedGroupIndex--;
+                _selectedPrimitiveIndex = SelectedGroup.Count;
             }
-            _selectedPrimitiveIndex = SelectedGroup.Count;
 
             if (_currentMode != Mode.Changing) return;
             ClearTemporaryPrimitive();
+            ClearTemporaryGroup();
             CreateTemporaryGroup();
         }
         else if (e.Key == Key.Right)
@@ -216,29 +215,37 @@ public partial class MainWindow : Window
             if (_selectedGroupIndex < _primitivesGroups.Count - 1)
             {
                 _selectedGroupIndex++;
+                _selectedPrimitiveIndex = SelectedGroup.Count;
             }
-            _selectedPrimitiveIndex = SelectedGroup.Count;
 
             if (_currentMode != Mode.Changing) return;
             ClearTemporaryPrimitive();
+            ClearTemporaryGroup();
             CreateTemporaryGroup();
-            
+
         }
         else if (e.Key == Key.Up)
         {
             if (_currentMode != Mode.Changing) return;
-            if (_selectedPrimitiveIndex >= SelectedGroup.Count - 1) return;
-            ClearTemporaryPrimitive();
-            _selectedPrimitiveIndex++;
-            CreateTemporaryPrimitive();
+            if (_selectedGroupIndex != -1 && _selectedPrimitiveIndex != -1 &&
+                _selectedPrimitiveIndex < SelectedGroup.Count - 1)
+            {
+                ClearTemporaryPrimitive();
+                ClearTemporaryGroup();
+                _selectedPrimitiveIndex++;
+                CreateTemporaryPrimitive();
+            }
         }
         else if (e.Key == Key.Down)
         {
             if (_currentMode != Mode.Changing) return;
-            if (_selectedPrimitiveIndex <= 0) return;
-            ClearTemporaryPrimitive();
-            _selectedPrimitiveIndex--;
-            CreateTemporaryPrimitive();
+            if (_selectedGroupIndex != -1 && _selectedPrimitiveIndex > 0)
+            {
+                ClearTemporaryPrimitive();
+                ClearTemporaryGroup();
+                _selectedPrimitiveIndex--;
+                CreateTemporaryPrimitive();
+            }
         }
         else if (e.Key == Key.W)
         {
@@ -310,6 +317,7 @@ public partial class MainWindow : Window
         }
         else if (e.Key == Key.R)
         {
+            if (_currentMode != Mode.Changing) return;
             if (_selectedPrimitiveIndex == -1 || _selectedGroupIndex == -1) return;
             if ((Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control)
             {
@@ -319,7 +327,7 @@ public partial class MainWindow : Window
                 }
                 else
                 {
-                    _colorKeysHandler.ChangePrimitiveColor(0,-15, 0, 0);
+                    _colorKeysHandler.ChangePrimitiveColor(0, -15, 0, 0);
                 }
             }
             else
@@ -336,6 +344,7 @@ public partial class MainWindow : Window
         }
         else if (e.Key == Key.G)
         {
+            if (_currentMode != Mode.Changing) return;
             if (_selectedPrimitiveIndex == -1 || _selectedGroupIndex == -1) return;
             if ((Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control)
             {
@@ -362,6 +371,7 @@ public partial class MainWindow : Window
         }
         else if (e.Key == Key.B)
         {
+            if (_currentMode != Mode.Changing) return;
             if (_selectedPrimitiveIndex == -1 || _selectedGroupIndex == -1) return;
             if ((Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control)
             {
@@ -453,25 +463,30 @@ public partial class MainWindow : Window
             {
                 if (_currentMode == Mode.Painting)
                 {
-                    if (_primitivesGroups.Count <= 0) return;
+                    if (_primitivesGroups.Count == 0) return;
                     if (_primitivesGroups[^1].Count > 0)
                     {
                         _primitivesGroups[^1].RemoveAt(_primitivesGroups[^1].Count - 1);
+                        _selectedPrimitiveIndex = _primitivesGroups[^1].Count;
                     }
                     else
                     {
                         _primitivesGroups.RemoveAt(_primitivesGroups.Count - 1);
-                        if(_selectedGroupIndex > 0) _selectedGroupIndex--;
+                        if (_selectedGroupIndex > 0)
+                        {
+                            _selectedGroupIndex--;
+                            _selectedPrimitiveIndex = SelectedGroup.Count;
+                        }
                     }
                 }
                 else if (_currentMode == Mode.Changing)
                 {
-                    if (_selectedPrimitiveIndex == SelectedGroup.Count)
+                    if (_selectedGroupIndex != - 1 && _selectedPrimitiveIndex == SelectedGroup.Count)
                     {
                         SelectedGroup.Reset();
                         CreateTemporaryGroup();
                     }
-                    else
+                    else if(_selectedPrimitiveIndex != -1)
                     {
                         SelectedPrimitive.Reset();
                         CreateTemporaryPrimitive();
@@ -517,6 +532,7 @@ public partial class MainWindow : Window
 
     private void CreateTemporaryGroup()
     {
+        if (SelectedGroup == null) return;
         var temporaryGroup = SelectedGroup.Clone();
         SelectedGroup.MakeTransparent();
 
@@ -528,6 +544,7 @@ public partial class MainWindow : Window
 
     private void CreateTemporaryPrimitive()
     {
+        if (SelectedPrimitive == null) return;
         var temporaryPrimitive = SelectedPrimitive.Clone();
         SelectedPrimitive.MakeTransparent();
 
@@ -539,12 +556,14 @@ public partial class MainWindow : Window
 
     private void AcceptGroupChanges()
     {
+        if (SelectedGroup == null) return;
         SelectedGroup.MakeNonTransparent();
         _primitivesGroups[_selectedGroupIndex] = _temporaryGroup;
     }
 
     private void AcceptPrimitiveChanges()
     {
+        if (SelectedPrimitive == null) return;
         SelectedPrimitive.MakeNonTransparent();
         SelectedGroup[_selectedPrimitiveIndex] = _temporaryPrimitive;
     }
@@ -558,7 +577,7 @@ public partial class MainWindow : Window
     private void ClearTemporaryPrimitive()
     {
         _temporaryPrimitive = null;
-        if(_selectedPrimitiveIndex == SelectedGroup.Count) return;
+        if (_selectedPrimitiveIndex == SelectedGroup?.Count) return;
         SelectedPrimitive?.MakeNonTransparent();
     }
 }
