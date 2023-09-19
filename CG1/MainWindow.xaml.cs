@@ -204,6 +204,7 @@ public partial class MainWindow : Window
                 _selectedGroupIndex--;
                 _selectedPrimitiveIndex = SelectedGroup.Count;
             }
+            else return;
 
             if (_currentMode != Mode.Changing) return;
             ClearTemporaryPrimitive();
@@ -217,6 +218,7 @@ public partial class MainWindow : Window
                 _selectedGroupIndex++;
                 _selectedPrimitiveIndex = SelectedGroup.Count;
             }
+            else return;
 
             if (_currentMode != Mode.Changing) return;
             ClearTemporaryPrimitive();
@@ -532,7 +534,7 @@ public partial class MainWindow : Window
 
     private void CreateTemporaryGroup()
     {
-        if (SelectedGroup == null) return;
+        if (_selectedGroupIndex == -1) return;
         var temporaryGroup = SelectedGroup.Clone();
         SelectedGroup.MakeTransparent();
 
@@ -544,7 +546,7 @@ public partial class MainWindow : Window
 
     private void CreateTemporaryPrimitive()
     {
-        if (SelectedPrimitive == null) return;
+        if (_selectedPrimitiveIndex == -1) return;
         var temporaryPrimitive = SelectedPrimitive.Clone();
         SelectedPrimitive.MakeTransparent();
 
@@ -556,14 +558,14 @@ public partial class MainWindow : Window
 
     private void AcceptGroupChanges()
     {
-        if (SelectedGroup == null) return;
+        if (_selectedGroupIndex == -1) return;
         SelectedGroup.MakeNonTransparent();
         _primitivesGroups[_selectedGroupIndex] = _temporaryGroup;
     }
 
     private void AcceptPrimitiveChanges()
     {
-        if (SelectedPrimitive == null) return;
+        if (_selectedPrimitiveIndex == -1) return;
         SelectedPrimitive.MakeNonTransparent();
         SelectedGroup[_selectedPrimitiveIndex] = _temporaryPrimitive;
     }
@@ -571,12 +573,14 @@ public partial class MainWindow : Window
     private void ClearTemporaryGroup()
     {
         _temporaryGroup = null;
-        SelectedGroup?.MakeNonTransparent();
+        if (_selectedGroupIndex == -1) return;
+        SelectedGroup.MakeNonTransparent();
     }
 
     private void ClearTemporaryPrimitive()
     {
         _temporaryPrimitive = null;
+        if (_selectedPrimitiveIndex == -1 || _selectedGroupIndex == -1) return;
         if (_selectedPrimitiveIndex == SelectedGroup?.Count) return;
         SelectedPrimitive?.MakeNonTransparent();
     }

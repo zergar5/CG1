@@ -9,11 +9,14 @@ public class Point : IPrimitive
 {
     private readonly double _x;
     private readonly double _y;
-
-    private float _size = 10;
-    private Color _color = Color.FromArgb(255, 255, 0, 0);
     private double _tX;
     private double _tY;
+
+    private float _size = 10;
+    private float _tSize;
+
+    private Color _color = Color.FromArgb(255, 255, 0, 0);
+
     private double _angle;
 
     public Point() { }
