@@ -124,7 +124,6 @@ public partial class MainWindow : Window
 
     private void GlWindowOnKeyDown(object sender, KeyEventArgs e)
     {
-        //Надо вынести
         if (e.Key == Key.Enter)
         {
             if (_currentMode == Mode.Painting)
