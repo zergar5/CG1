@@ -1,7 +1,6 @@
 ﻿using CG1.Core;
 using CG1.Core.Primitives;
 using SharpGL;
-using System.Collections.Generic;
 
 namespace CG1.Handlers.KeyboardHandlers;
 

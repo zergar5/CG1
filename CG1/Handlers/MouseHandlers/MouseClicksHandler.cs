@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Windows.Media;
-using CG1.Core;
+﻿using CG1.Core;
 using CG1.Core.Primitives;
+using System.Collections.Generic;
+using System.Windows.Media;
 
 namespace CG1.Handlers.MouseHandlers;
 

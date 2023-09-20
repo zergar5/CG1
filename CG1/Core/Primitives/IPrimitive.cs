@@ -1,5 +1,4 @@
 ﻿using SharpGL;
-using System;
 using System.Windows.Media;
 
 namespace CG1.Core.Primitives;

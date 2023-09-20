@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using CG1.Core.Primitives;
+﻿using CG1.Core.Primitives;
 using SharpGL;
+using System.Collections.Generic;
+using System.Linq;
 using Point = System.Windows.Point;
 
 namespace CG1.Core;

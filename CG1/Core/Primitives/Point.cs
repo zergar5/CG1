@@ -1,7 +1,5 @@
-﻿using System;
-using System.Windows.Forms;
+﻿using SharpGL;
 using System.Windows.Media;
-using SharpGL;
 
 namespace CG1.Core.Primitives;
 
@@ -19,9 +17,9 @@ public class Point : IPrimitive
     private float _tSize;
 
     private Color Color => Color.FromArgb(
-        (byte)(_color.A + _tA), (byte)(_color.R + _tR), 
+        (byte)(_color.A + _tA), (byte)(_color.R + _tR),
         (byte)(_color.G + _tG), (byte)(_color.B + _tB));
-    
+
 
     private Color _color = Color.FromArgb(255, 255, 0, 0);
     private short _tA;

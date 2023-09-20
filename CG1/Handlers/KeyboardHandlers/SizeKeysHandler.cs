@@ -1,5 +1,5 @@
-﻿using CG1.Core.Primitives;
-using CG1.Core;
+﻿using CG1.Core;
+using CG1.Core.Primitives;
 
 namespace CG1.Handlers.KeyboardHandlers;
 
