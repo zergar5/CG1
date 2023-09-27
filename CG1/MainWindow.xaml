@@ -204,9 +204,9 @@
                             <TextBlock x:Name="SizeValue"                                       
                                        Grid.Column="1"
                             />
-                            <Button x:Name="BPlusButton"
+                            <Button x:Name="SizePlusButton"
                                     Content="+"
-                                    Click="BPlusButton_OnClick"
+                                    Click="SizePlusButton_OnClick"
                                     Focusable="False"
                                     Grid.Column="2"
                                     Padding="0"
