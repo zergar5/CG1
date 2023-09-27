@@ -5,9 +5,11 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:sharpGL="clr-namespace:SharpGL.WPF;assembly=SharpGL.WPF"
         xmlns:local="clr-namespace:CG1"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
         KeyDown="GlWindowOnKeyDown"
-        Title="Компьютерная графика" Height="540" Width="960" >
+        Title="Компьютерная графика" Height="540" Width="960">
+
     <Grid Background="#ffdadada">
         <sharpGL:OpenGLControl x:Name="glWindow" OpenGLDraw="OpenGLDraw" OpenGLInitialized="OpenGLInitialized" Resized="OpenGLControlResized"
                                MouseDown="GlWindowOnMouseClick"
@@ -16,39 +18,39 @@
                                VerticalAlignment="Center"
                                HorizontalAlignment="Left"
         />
-        <Border Width="260" MinHeight="540" Background="#ffddaaff" VerticalAlignment="Center" HorizontalAlignment="Right">
+        <Border Width="260" MinHeight="540" Background="white" VerticalAlignment="Center" HorizontalAlignment="Right">
             <TabControl>
                 <TabItem>
                     <TabItem.Header>
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Margin="3">Создание новых примитивов</TextBlock>
+                            <TextBlock Margin="3">Creating</TextBlock>
                         </StackPanel>
                     </TabItem.Header>
                     <StackPanel>
-                        <Button x:Name="ChanggingButton" Click="PaintingButton_OnClick"/>
                         <Button x:Name="AddGroupButton" Content="Добавить группу" Width="100" Height="50" Click="AddGroupButton_OnClick" Focusable="False"/>
                         <Button x:Name="DeleteLastButton" Content="Удалить последний примитив/группу" Click="DeleteLastButton_OnClick" Focusable="False"/>
                         <Button x:Name="DeleteButton" Content="Удалить" Click="DeleteButton_OnClick" Focusable="False"/>
                         <Button x:Name="PreviousGroupButton" Content="Предыдущая группа"  FontSize="9" Click="PreviousGroupButton_OnClick" Focusable="False"/>
                         <Button x:Name="NextGroupButton" Content="Следующая группа" FontSize="9" Click="NextGroupButton_OnClick" Focusable="False"/>
-                        <Button x:Name="PreviousPrimitiveButton" Content="Предыдущщий примитив"  FontSize="8"  Click="PreviousPrimitiveButton_OnClick" Focusable="False"/>
+                        <Button x:Name="PreviousPrimitiveButton" Content="Предыдущий примитив"  FontSize="8"  Click="PreviousPrimitiveButton_OnClick" Focusable="False"/>
                         <Button x:Name="NextPrimitiveButton" Content="Следующий примитив"  FontSize="9" Click="NextPrimitiveButton_OnClick" Focusable="False"/>
+
                     </StackPanel>
                 </TabItem>
-                <TabItem>                    
+                <TabItem>
                     <TabItem.Header>
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Margin="3">Редактирование примитивов</TextBlock>
+                            <TextBlock Margin="3">Changing</TextBlock>
                         </StackPanel>
                     </TabItem.Header>
                     <StackPanel>
-                        <Button x:Name="PaintingButton" Click="ChangingButton_OnClick"/>
                         <Button x:Name="AcceptChangesButton" Content="Принять изменения" FontSize="8" Visibility="Hidden" Click="AcceptChangesButton_OnClick" Focusable="False"/>
                         <Button x:Name="CancelChangesButton" Content="Отменить изменения" FontSize="9" Visibility="Hidden" Click="CancelChangesButton_OnClick" Focusable="False"/>
-                        <Button x:Name="UpButton" Content="Вверх" Click="UpButton_OnClick" Focusable="False"/>
-                        <Button x:Name="LeftButton" Content="Влево" Click="LeftButton_OnClick" Focusable="False"/>
-                        <Button x:Name="DownButton" Content="Вниз" Click="DownButton_OnClick" Focusable="False"/>
-                        <Button x:Name="RightButton" Content="Вправо"  Visibility="Hidden" Click="RightButton_OnClick" Focusable="False"/>
+                        <Button x:Name="UpButton" Content="Вверх" Click="UpButton_OnClick" Focusable="False" Width="82" Style="{StaticResource MaterialDesignOutlinedButton}"/>
+                        <Button x:Name="LeftButton" Content="Влево" Click="LeftButton_OnClick" Focusable="False" Width="82"  Style="{StaticResource MaterialDesignOutlinedButton}"/>
+                        <Button x:Name="DownButton" Content="Вниз" Click="DownButton_OnClick" Focusable="False" Width="82" Style="{StaticResource MaterialDesignOutlinedButton}"/>
+                        <Button x:Name="RightButton" Content="Вправо"  Click="RightButton_OnClick" Focusable="False" Width="82" Style="{StaticResource MaterialDesignOutlinedButton}"/>
+                        <!--
                         <Label x:Name="RLabel" Content="R" Foreground="Red"/>
                         <Button x:Name="RPlusButton" Content="+"  Click="RPlusButton_OnClick" Focusable="False"/>
                         <Button x:Name="RMinusButton" Content="-" Click="RMinusButton_OnClick" Focusable="False"/>
@@ -60,7 +62,9 @@
                         <Button x:Name="BMinusButton" Content="-" Click="BMinusButton_OnClick" Focusable="False"/>
                         <Label x:Name="SizeLabel" Content="Size" />
                         <Button x:Name="SizePlusButton" Content="+" Click="SizePlusButton_OnClick" Focusable="False"/>
-                        <Button x:Name="SizeMinusButton" Content="-" Click="SizeMinusButton_OnClick" Focusable="False"/>
+                        <Button x:Name="SizeMinusButton" Content="-" Click="SizeMinusButton_OnClick" Focusable="False"/>-->
+                        <Label Content="Smooth"/>
+                        <ToggleButton />
                     </StackPanel>
                 </TabItem>
             </TabControl>
