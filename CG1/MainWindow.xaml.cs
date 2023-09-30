@@ -7,6 +7,9 @@ using SharpGL.WPF;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media;
+using CG1.Contexts;
+using CG1.Tools;
 using Point = System.Windows.Point;
 
 namespace CG1;
@@ -14,6 +17,7 @@ namespace CG1;
 public partial class MainWindow : Window
 {
     private OpenGL _gl;
+    private readonly PrimitivesApp _primitivesApp;
     private readonly MouseClicksHandler _mouseClicksHandler;
     private readonly MoveKeysHandler _moveKeysHandler;
     private readonly ColorKeysHandler _colorKeysHandler;
@@ -35,6 +39,7 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
+        _primitivesApp = new PrimitivesApp(new PrimitivesGroupsContext(), new PrimitivesEditor());
         _moveKeysHandler = new MoveKeysHandler(glWindow.OpenGL);
         _mouseClicksHandler = new MouseClicksHandler(_primitivesGroups);
         _colorKeysHandler = new ColorKeysHandler();
@@ -43,40 +48,26 @@ public partial class MainWindow : Window
 
     private void OpenGLDraw(object sender, OpenGLRoutedEventArgs args)
     {
-        _gl.ClearColor(1f, 1f, 1f, 1f);
-        _gl.Clear(OpenGL.GL_COLOR_BUFFER_BIT);
+        _primitivesApp.Render((OpenGLControl)sender, args);
 
-        if (_primitivesGroups.Count > 0)
+        if (_selectedPrimitiveIndex == SelectedGroup.Count)
         {
-            if (_selectedGroupIndex != -1)
+            SelectedGroup.Highlight(_gl);
+            if (_currentMode == Mode.Changing)
             {
-                if (_selectedPrimitiveIndex == SelectedGroup.Count)
-                {
-                    SelectedGroup.Highlight(_gl);
-                    if (_currentMode == Mode.Changing)
-                    {
-                        _temporaryGroup?.Highlight(_gl);
-                        _temporaryGroup?.Draw(_gl);
-                    }
-                }
-                else
-                {
-                    if (_selectedPrimitiveIndex != -1)
-                    {
-                        SelectedPrimitive?.Highlight(_gl);
-                        _temporaryPrimitive?.Highlight(_gl);
-                        _temporaryPrimitive?.Draw(_gl);
-                    }
-                }
-            }
-
-            foreach (var primitivesGroup in _primitivesGroups)
-            {
-                primitivesGroup.Draw(_gl);
+                _temporaryGroup?.Highlight(_gl);
+                _temporaryGroup?.Draw(_gl);
             }
         }
-
-        _gl.Flush();
+        else
+        {
+            if (_selectedPrimitiveIndex != -1)
+            {
+                SelectedPrimitive?.Highlight(_gl);
+                _temporaryPrimitive?.Highlight(_gl);
+                _temporaryPrimitive?.Draw(_gl);
+            }
+        }
     }
 
     private void OpenGLInitialized(object sender, OpenGLRoutedEventArgs args)
@@ -91,100 +82,81 @@ public partial class MainWindow : Window
 
     private void OpenGLControlResized(object sender, OpenGLRoutedEventArgs args)
     {
-        _actualHeight = glWindow.ActualHeight;
-
         SetOrthoProjection(_gl);
 
         OpenGLDraw(sender, args);
     }
 
-    private void GlWindowOnMouseClick(object sender, MouseButtonEventArgs e)
+    private void GlWindowOnMouseClick(object sender, MouseButtonEventArgs args)
     {
-        if (e.LeftButton != MouseButtonState.Pressed) return;
-        var position = e.GetPosition(glWindow);
-        position.Y = _actualHeight - position.Y;
+        if (args.LeftButton != MouseButtonState.Pressed) return;
 
-        if (_currentMode == Mode.Painting)
+        var gl = (OpenGLControl)sender;
+
+        if (args.ClickCount == 1)
         {
-            if (e.ClickCount != 1) return;
-            AddPrimitive(position);
+            _primitivesApp.OnMouseClick(gl, args);
         }
-        else if (_currentMode == Mode.Changing)
+        else if (args.ClickCount == 2)
         {
-            if (e.ClickCount == 1)
-            {
-                SelectPrimitive(position);
-            }
-            else if (e.ClickCount == 2)
-            {
-                SelectPrimitivesGroup(position);
-            }
+            _primitivesApp.OnMouseDoubleClick(gl, args);
         }
     }
 
-    private void GlWindowOnKeyDown(object sender, KeyEventArgs e)
+    private void GlWindowOnKeyDown(object sender, KeyEventArgs args)
     {
-        if (e.Key == Key.Enter)
+        if (args.Key == Key.Enter)
         {
-            if (_currentMode == Mode.Painting)
-            {
-                AddGroup();
-            }
-            else if (_currentMode == Mode.Changing)
-            {
-                AcceptChanges();
-            }
+            _primitivesApp.OnEnterKeyDown();
+            args.Handled = true;
         }
-        else if (e.Key == Key.Left)
+        else if (args.Key == Key.Left)
         {
-            ClearTemporaryGroup();
-            SelectPreviousGroup();
+            _primitivesApp.OnSelectionKeyDown(args.Key);
         }
-        else if (e.Key == Key.Right)
+        else if (args.Key == Key.Right)
         {
-            ClearTemporaryGroup();
-            SelectNextGroup();
+            _primitivesApp.OnSelectionKeyDown(args.Key);
         }
-        else if (e.Key == Key.Up)
+        else if (args.Key == Key.Up)
         {
             ClearTemporaryPrimitive();
             SelectNextPrimitive();
         }
-        else if (e.Key == Key.Down)
+        else if (args.Key == Key.Down)
         {
             ClearTemporaryPrimitive();
             SelectPreviousPrimitive();
         }
-        else if (e.Key == Key.W)
+        else if (args.Key == Key.W)
         {
-            MovePrimitiveOrGroup(0d, 5d);
+            _primitivesApp.OnMoveKeyDown(0d, 5d);
         }
-        else if (e.Key == Key.A)
+        else if (args.Key == Key.A)
         {
-            MovePrimitiveOrGroup(-5d, 0d);
+            _primitivesApp.OnMoveKeyDown(-5d, 0d);
         }
-        else if (e.Key == Key.S)
+        else if (args.Key == Key.S)
         {
-            MovePrimitiveOrGroup(0d, -5d);
+            _primitivesApp.OnMoveKeyDown(0d, -5d);
         }
-        else if (e.Key == Key.D)
+        else if (args.Key == Key.D)
         {
-            MovePrimitiveOrGroup(5d, 0d);
+            _primitivesApp.OnMoveKeyDown(5d, 0d);
         }
-        else if (e.Key == Key.P)
+        else if (args.Key == Key.P)
         {
-            ChangeModeToPainting();
+            _primitivesApp.SetMode(Mode.Painting);
         }
-        else if (e.Key == Key.C)
+        else if (args.Key == Key.C)
         {
-            ChangeModeToChanging();
+            _primitivesApp.SetMode(Mode.Changing);
         }
-        else if (e.Key == Key.R)
+        else if (args.Key == Key.R)
         {
-            if (_currentMode != Mode.Changing) return;
-            if (_selectedPrimitiveIndex == -1 || _selectedGroupIndex == -1) return;
             if ((Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control)
             {
+                _primitivesApp.OnChangeColorKeyDown();
                 ChangeColorOfPrimitiveOrGroup(0, -15, 0, 0);
             }
             else
@@ -192,7 +164,7 @@ public partial class MainWindow : Window
                 ChangeColorOfPrimitiveOrGroup(0, 15, 0, 0);
             }
         }
-        else if (e.Key == Key.G)
+        else if (args.Key == Key.G)
         {
             if (_currentMode != Mode.Changing) return;
             if (_selectedPrimitiveIndex == -1 || _selectedGroupIndex == -1) return;
@@ -205,7 +177,7 @@ public partial class MainWindow : Window
                 ChangeColorOfPrimitiveOrGroup(0, 0, 15, 0);
             }
         }
-        else if (e.Key == Key.B)
+        else if (args.Key == Key.B)
         {
             if (_currentMode != Mode.Changing) return;
             if (_selectedPrimitiveIndex == -1 || _selectedGroupIndex == -1) return;
@@ -218,24 +190,24 @@ public partial class MainWindow : Window
                 ChangeColorOfPrimitiveOrGroup(0, 0, 0, 15);
             }
         }
-        else if (e.Key == Key.OemPlus)
+        else if (args.Key == Key.OemPlus)
         {
             ChangeSizeOfPrimitiveOrGroup(1f);
         }
-        else if (e.Key == Key.OemMinus)
+        else if (args.Key == Key.OemMinus)
         {
             ChangeSizeOfPrimitiveOrGroup(-1f);
         }
-        else if (e.Key == Key.N)
+        else if (args.Key == Key.N)
         {
             _gl.Disable(OpenGL.GL_POINT_SMOOTH);
         }
-        else if (e.Key == Key.M)
+        else if (args.Key == Key.M)
         {
             _gl.Enable(OpenGL.GL_POINT_SMOOTH);
             _gl.Hint(OpenGL.GL_POINT_SMOOTH_HINT, OpenGL.GL_NICEST);
         }
-        else if (e.Key == Key.Z)
+        else if (args.Key == Key.Z)
         {
             if ((Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control)
             {
@@ -249,11 +221,11 @@ public partial class MainWindow : Window
                 }
             }
         }
-        else if (e.Key == Key.Delete)
+        else if (args.Key == Key.Delete)
         {
             DeleteSelectedGroupOrPrimitive();
         }
-        else if (e.Key == Key.Escape)
+        else if (args.Key == Key.Escape)
         {
             Cancel();
         }
