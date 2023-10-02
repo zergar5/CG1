@@ -128,7 +128,7 @@ public class Point : IPrimitive
         return Color;
     }
 
-    public void ChangeColor(short a, short r, short g, short b)
+    public void ChangeColor(float a, float r, float g, float b)
     {
         _tA += a;
         _tR += r;
@@ -182,6 +182,11 @@ public class Point : IPrimitive
     }
 
     public IPrimitive Clone()
+    {
+        return new Point(X, Y, Size, Color);
+    }
+
+    public IPrimitive Copy(IPrimitive primitive)
     {
         return new Point(X, Y, Size, Color);
     }

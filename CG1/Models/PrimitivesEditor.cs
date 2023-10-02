@@ -13,6 +13,11 @@ public class PrimitivesEditor
     private IPrimitive? _editingPrimitive;
     private PrimitivesGroup? _editingGroup;
 
+    public PrimitivesEditor()
+    {
+        _editingGroup = new PrimitivesGroup();
+    }
+
     public void StartEditing(IPrimitive primitive)
     {
         _editingPrimitive = primitive.Clone();
@@ -20,7 +25,7 @@ public class PrimitivesEditor
 
     public void StartEditing(PrimitivesGroup primitivesGroup)
     {
-        _editingGroup = primitivesGroup.Clone();
+        _editingGroup = primitivesGroup.Copy(primitivesGroup);
     }
 
     public void StopEditing()
@@ -29,16 +34,29 @@ public class PrimitivesEditor
         _editingGroup = null;
     }
 
+    public void CancelChanges()
+    {
+        if (_editingGroup != null) EditingGroup.;
+        else if (_editingPrimitive != null) EditingPrimitive.Move(x, y);
+    }
+
+    public void ReturnChanges()
+    {
+        ClearEditing();
+        if (_editingGroup != null) EditingGroup.;
+        else if (_editingPrimitive != null) EditingPrimitive.Move(x, y);
+    }
+
     public void Move(double x, double y)
     {
         if(_editingGroup != null) EditingGroup.Move(x, y);
         else if(_editingPrimitive != null) EditingPrimitive.Move(x, y);
     }
 
-    public void EditColor(Color color)
+    public void EditColor(float a, float r, float g, float b)
     {
-        if (_editingGroup != null) EditingGroup.ChangeColor(c);
-        else if (_editingPrimitive != null) EditingPrimitive.ChangeColor();
+        if (_editingGroup != null) EditingGroup.ChangeColor(a, r, g, b);
+        else if (_editingPrimitive != null) EditingPrimitive.ChangeColor(a, r, g, b);
     }
 
     public void ChangeSize(float size)
@@ -47,15 +65,9 @@ public class PrimitivesEditor
         else if (_editingPrimitive != null) EditingPrimitive.ChangeSize(size);
     }
 
-    public void EditColor()
+    private void ClearEditing()
     {
-
-    }
-
-    
-
-    public void Rotate()
-    {
-
+        _editingPrimitive = null;
+        _editingGroup = null;
     }
 }

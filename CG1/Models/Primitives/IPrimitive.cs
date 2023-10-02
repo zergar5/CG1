@@ -12,7 +12,7 @@ public interface IPrimitive
     public void Rotate(double angle);
     public void SetColor(byte a, byte r, byte g, byte b);
     public Color GetColor();
-    public void ChangeColor(Color color);
+    public void ChangeColor(float a, float r, float g, float b);
     public void MakeTransparent();
     public void MakeNonTransparent();
     public void SetSize(float size); //добавить минимальный и максимальный размер точки
@@ -21,4 +21,5 @@ public interface IPrimitive
     public void CancelChanges();
     public bool Contains(System.Windows.Point point);
     public IPrimitive Clone();
+    public IPrimitive Copy(IPrimitive primitive);
 }

@@ -43,20 +43,28 @@ public class PrimitivesApp
 
         if (_currentMode == Mode.Painting)
         {
-            if (_context.SelectedGroup == null)
+            if (_context.Groups.Count == 0)
             {
                 _context.AddGroup();
+            }
+            if (_context.SelectedGroup == null)
+            {
+                _context.SelectGroup(_context.Groups.Count - 1);
             }
             _context.AddPrimitive(
                 new Point(position.X, position.Y, 10, Color.FromArgb(255, 255, 0, 0))
             );
-            args.Handled = true;
         }
         else if (_currentMode == Mode.Changing)
         {
             _context.SelectPrimitiveAtCursor(position);
-            args.Handled = true;
+            if (_context.SelectedPrimitive != null)
+            {
+                _primitivesEditor.StartEditing(_context.SelectedPrimitive);
+            }
         }
+
+        args.Handled = true;
     }
     public void OnMouseDoubleClick(OpenGLControl gl, MouseButtonEventArgs args)
     {
@@ -66,8 +74,13 @@ public class PrimitivesApp
         if (_currentMode == Mode.Changing)
         {
             _context.SelectGroupAtCursor(position);
-            args.Handled = true;
+            if (_context.SelectedGroup != null)
+            {
+                _primitivesEditor.StartEditing(_context.SelectedGroup);
+            }
         }
+
+        args.Handled = true;
     }
 
     public void OnEnterKeyDown()
@@ -84,6 +97,7 @@ public class PrimitivesApp
 
     public void OnSelectionKeyDown(Key key)
     {
+        //Проверки что не пустой список и выбрано хотя бы что-то
         if (key == Key.Left)
         {
             _context.SelectPreviousGroup();
@@ -96,11 +110,11 @@ public class PrimitivesApp
         {
             if (key == Key.Up)
             {
-
+                _context.SelectPreviousPrimitive();
             }
             else if (key == Key.Down)
             {
-
+                _context.SelectNextPrimitive();
             }
         }
     }
@@ -110,9 +124,9 @@ public class PrimitivesApp
         _primitivesEditor.Move(x, y);
     }
 
-    public void OnChangeColorKeyDown(Color color)
+    public void OnChangeColorKeyDown(float a = 0, float r = 0, float g = 0, float b = 0)
     {
-        _primitivesEditor.EditColor(color);
+        _primitivesEditor.EditColor(a, r, g, b);
     }
 
     public void OnSizeKeyDown(float size)
@@ -120,16 +134,49 @@ public class PrimitivesApp
         _primitivesEditor.ChangeSize(size);
     }
 
+    public void OnCancelActionKeyDown()
+    {
+        if (_currentMode == Mode.Painting)
+        {
+            if (_context.SelectedGroup == null) return;
+            if (_context.SelectedGroup.Count > 0)
+            {
+                _context.RemoveLastPrimitive();
+            }
+            else _context.RemoveLastGroup();
+        }
+        else if (_currentMode == Mode.Changing)
+        {
+            _primitivesEditor.CancelChanges();
+        }
+    }
+
+    public void OnDeleteKeyDown()
+    {
+        
+    }
+
+    public void OnReturnKeyDown()
+    {
+        //Добавить проверку выбрано ли что-то
+        if (_currentMode == Mode.Changing)
+        {
+            _primitivesEditor.ReturnChanges();
+            _primitivesEditor.StopEditing();
+        }
+        
+        _context.Unselect();
+    }
+
     public void SetMode(Mode mode)
     {
         if (mode == Mode.Painting)
         {
-            _context.SelectGroup(_context.Groups.Count - 1);
+            _currentMode = mode;
         }
         else if (mode == Mode.Changing)
         {
             if (_context.SelectedGroup is not { Count: > 0 }) return;
-            _primitivesEditor.StartEditing(_context.SelectedGroup);
             _currentMode = mode;
         }
     }

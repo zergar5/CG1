@@ -60,11 +60,11 @@ public class PrimitivesGroup
         }
     }
 
-    public void ChangeColor(Color color)
+    public void ChangeColor(float a, float r, float g, float b)
     {
         foreach (var primitive in _primitives)
         {
-            primitive.ChangeColor(color);
+            primitive.ChangeColor(a, r, g, b);
         }
     }
 
@@ -123,6 +123,16 @@ public class PrimitivesGroup
     public PrimitivesGroup Clone()
     {
         return new PrimitivesGroup(_primitives.Select(x => x.Clone()).ToList());
+    }
+
+    public PrimitivesGroup Copy(PrimitivesGroup group)
+    {
+        for (var i = 0; i < group.Count; i++)
+        {
+            group[i].Copy(_primitives[i]);
+        }
+
+        return group;
     }
 
     public IEnumerator<IPrimitive> GetEnumerator() => ((IEnumerable<IPrimitive>)_primitives).GetEnumerator();

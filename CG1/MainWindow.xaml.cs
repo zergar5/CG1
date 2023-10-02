@@ -110,23 +110,9 @@ public partial class MainWindow : Window
             _primitivesApp.OnEnterKeyDown();
             args.Handled = true;
         }
-        else if (args.Key == Key.Left)
+        else if (args.Key is Key.Left or Key.Right or Key.Up or Key.Down)
         {
             _primitivesApp.OnSelectionKeyDown(args.Key);
-        }
-        else if (args.Key == Key.Right)
-        {
-            _primitivesApp.OnSelectionKeyDown(args.Key);
-        }
-        else if (args.Key == Key.Up)
-        {
-            ClearTemporaryPrimitive();
-            SelectNextPrimitive();
-        }
-        else if (args.Key == Key.Down)
-        {
-            ClearTemporaryPrimitive();
-            SelectPreviousPrimitive();
         }
         else if (args.Key == Key.W)
         {
@@ -156,47 +142,42 @@ public partial class MainWindow : Window
         {
             if ((Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control)
             {
-                _primitivesApp.OnChangeColorKeyDown();
-                ChangeColorOfPrimitiveOrGroup(0, -15, 0, 0);
+                _primitivesApp.OnChangeColorKeyDown(r: -15);
             }
             else
             {
-                ChangeColorOfPrimitiveOrGroup(0, 15, 0, 0);
+                _primitivesApp.OnChangeColorKeyDown(r: 15);
             }
         }
         else if (args.Key == Key.G)
         {
-            if (_currentMode != Mode.Changing) return;
-            if (_selectedPrimitiveIndex == -1 || _selectedGroupIndex == -1) return;
             if ((Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control)
             {
-                ChangeColorOfPrimitiveOrGroup(0, 0, -15, 0);
+                _primitivesApp.OnChangeColorKeyDown(g: -15);
             }
             else
             {
-                ChangeColorOfPrimitiveOrGroup(0, 0, 15, 0);
+                _primitivesApp.OnChangeColorKeyDown(g: 15);
             }
         }
         else if (args.Key == Key.B)
         {
-            if (_currentMode != Mode.Changing) return;
-            if (_selectedPrimitiveIndex == -1 || _selectedGroupIndex == -1) return;
             if ((Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control)
             {
-                ChangeColorOfPrimitiveOrGroup(0, 0, 0, -15);
+                _primitivesApp.OnChangeColorKeyDown(b: -15);
             }
             else
             {
-                ChangeColorOfPrimitiveOrGroup(0, 0, 0, 15);
+                _primitivesApp.OnChangeColorKeyDown(b: 15);
             }
         }
         else if (args.Key == Key.OemPlus)
         {
-            ChangeSizeOfPrimitiveOrGroup(1f);
+            _primitivesApp.OnSizeKeyDown(1f);
         }
         else if (args.Key == Key.OemMinus)
         {
-            ChangeSizeOfPrimitiveOrGroup(-1f);
+            _primitivesApp.OnSizeKeyDown(-1f);
         }
         else if (args.Key == Key.N)
         {
@@ -211,23 +192,16 @@ public partial class MainWindow : Window
         {
             if ((Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control)
             {
-                if (_currentMode == Mode.Painting)
-                {
-                    DeleteLastGroupOrPrimitive();
-                }
-                else if (_currentMode == Mode.Changing)
-                {
-                    CancelChanges();
-                }
+                _primitivesApp.OnCancelActionKeyDown();
             }
         }
         else if (args.Key == Key.Delete)
         {
-            DeleteSelectedGroupOrPrimitive();
+            _primitivesApp.OnDeleteKeyDown();
         }
         else if (args.Key == Key.Escape)
         {
-            Cancel();
+            _primitivesApp.OnReturnKeyDown();
         }
     }
 
