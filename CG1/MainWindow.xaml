@@ -11,6 +11,10 @@
         Title="Компьютерная графика" Height="540" Width="960">
 
     <Grid Background="#ffdadada">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="779*"/>
+            <ColumnDefinition Width="181*"/>
+        </Grid.ColumnDefinitions>
         <sharpGL:OpenGLControl x:Name="glWindow" OpenGLDraw="OpenGLDraw" OpenGLInitialized="OpenGLInitialized" Resized="OpenGLControlResized"
                                MouseDown="GlWindowOnMouseClick"
                                KeyDown="GlWindowOnKeyDown"
@@ -18,7 +22,7 @@
                                VerticalAlignment="Center"
                                HorizontalAlignment="Left"
         />
-        <Border Width="260" MinHeight="540" Background="white" VerticalAlignment="Center" HorizontalAlignment="Right">
+        <Border Width="260" MinHeight="540" Background="white" VerticalAlignment="Center" HorizontalAlignment="Left" Grid.ColumnSpan="2" Margin="700,0,0,0">
             <TabControl>
                 <TabItem>
                     <TabItem.Header>
@@ -26,11 +30,31 @@
                             <TextBlock Margin="3">Creating</TextBlock>
                         </StackPanel>
                     </TabItem.Header>
-                    <StackPanel>                        
-                        <Grid Margin="3">
+                    <StackPanel>
+                        <Grid>
+                            <ListView ItemsSource="{DynamicResource ResourceKey=phones}" >
+                                <ListView.View>
+                                    <GridView>
+                                        <GridViewColumn DisplayMemberBinding="{Binding Path=NumberOfGroup}"
+                                                        Width="80">
+                                            №
+                                        </GridViewColumn>
+                                        <GridViewColumn DisplayMemberBinding="{Binding Path=Primitives}"
+                                                        Width="200"
+                                        >
+                                            Number of primitives
+                                        </GridViewColumn>
+                                    </GridView>
+                                </ListView.View>
+                                <ListView.Resources>
+
+                                </ListView.Resources>
+                            </ListView>
+                        </Grid>
+                        <Grid Margin="3,3,6,0">
                             <Grid.RowDefinitions>
-                                <RowDefinition></RowDefinition>
-                                <RowDefinition></RowDefinition>
+                                <RowDefinition Height="30"></RowDefinition>
+                                <RowDefinition Height="30"></RowDefinition>
                             </Grid.RowDefinitions>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition></ColumnDefinition>
@@ -38,9 +62,12 @@
                             </Grid.ColumnDefinitions>
                             <Label 
                                    Content="Group"
-                                   FontSize="14"
+                                   FontSize="16"
+                                   FontWeight="Bold"
                                    Grid.Column="0"
+                                   Padding="5,0,0,0"
                                    HorizontalAlignment="Left"
+                                   
                             />
                             <TextBlock                                       
                                        Grid.Column="1"
@@ -52,7 +79,7 @@
                                     Grid.Column="2"
                                     Padding="0"
                                     Width="40"
-                                    Height="30"
+                                    Height="25"
                                     HorizontalAlignment="Left"
                             />
                             <Button x:Name="NextGroupButton"
@@ -62,14 +89,16 @@
                                     Grid.Column="2"
                                     Padding="0"
                                     Width="40"
-                                    Height="30"
+                                    Height="25"
                                     HorizontalAlignment="Right"
                             />
                             <Label 
                                    Content="Primitive"
-                                   FontSize="14"
+                                   FontSize="16"
+                                   FontWeight="Bold"
                                    Grid.Column="0"
                                    Grid.Row="1"
+                                   Padding="5,0,0,0"
                                    HorizontalAlignment="Left"
                             />
                             <TextBlock                                       
@@ -84,7 +113,7 @@
                                     Grid.Column="2"
                                     Padding="0"
                                     Width="40"
-                                    Height="30"
+                                    Height="25"
                                     HorizontalAlignment="Left"
                             />
                             <Button x:Name="NextPrimitiveButton"
@@ -95,10 +124,10 @@
                                     Grid.Column="2"
                                     Padding="0"
                                     Width="40"
-                                    Height="30"
+                                    Height="25"
                                     HorizontalAlignment="Right"
                             />
-                        </Grid>                        
+                        </Grid>
                         <Grid Margin="0,10,0,0">
                             <Grid.RowDefinitions>
                                 <RowDefinition></RowDefinition>
@@ -120,14 +149,14 @@
                             />
                             <Button x:Name="DeleteButton"
                                     Click="DeleteButton_OnClick"
-                                    Content="Delete"
+                                    Content="Delete selected"
                                     FontSize="14"
                                     Width="120"
                                     Grid.Column="0"                                    
                                     Margin="0,0,0,10"
                                     Padding="0"
                                     Focusable="False"
-                                    Style="{StaticResource MaterialDesignFlatButton}"
+                                    Style="{StaticResource MaterialDesignOutlinedButton}"
                             />
                             <Button x:Name="DeleteLastButton"
                                     Click="DeleteLastButton_OnClick"
@@ -148,62 +177,67 @@
                     </TabItem.Header>
                     <StackPanel>
                         <Grid>
-                            <ListView Name="phonesList" ItemsSource="{DynamicResource ResourceKey=phones}" >
+                            <ListView ItemsSource="{DynamicResource ResourceKey=phones}" >
                                 <ListView.View>
                                     <GridView>
-                                        <GridViewColumn DisplayMemberBinding="{Binding Path=Title}"
+                                        <GridViewColumn DisplayMemberBinding="{Binding Path=NumberOfGroup}"
                                                         Width="80">
-                                        №
+                                            №
                                         </GridViewColumn>
                                         <GridViewColumn DisplayMemberBinding="{Binding Path=Primitives}"
                                                         Width="200"
                                         >
-                                        Number of primitives
+                                            Number of primitives
                                         </GridViewColumn>
                                     </GridView>
                                 </ListView.View>
                                 <ListView.Resources>
-                                    
+
                                 </ListView.Resources>
                             </ListView>
                         </Grid>
+
                         <Grid Margin="3">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition></ColumnDefinition>
                                 <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
                             </Grid.ColumnDefinitions>
                             <Label Content="Smooth"
-                                   FontSize="14"
+                                   FontSize="16"
+                                   FontWeight="Bold"
+                                   Padding="5,2,0,0"
                                    Grid.Column="0"
                                    HorizontalAlignment="Left"
+                                   Style="{StaticResource MaterialDesignLabel}"
                             />
                             <ToggleButton
-                                Grid.Column="1"
+                                Grid.Column="2"
                                 HorizontalAlignment="Center"
                             />
                         </Grid>
-                        <Grid Margin="3">                            
+                        <Grid Margin="3,3,6,6">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition></ColumnDefinition>
                                 <ColumnDefinition></ColumnDefinition>
                                 <ColumnDefinition></ColumnDefinition>
                             </Grid.ColumnDefinitions>
-                            <!--<Label x:Name="RLabel" Content="R" Foreground="Red"/>
-                            <Button x:Name="RPlusButton" Content="+"  Click="RPlusButton_OnClick" Focusable="False"/>
-                            <Button x:Name="RMinusButton" Content="-" Click="RMinusButton_OnClick" Focusable="False"/>
-                            <Label x:Name="GLabel" Content="G" Foreground="Green"/>
-                            <Button x:Name="GPlusButton" Content="+" Click="GPlusButton_OnClick" Focusable="False"/>
-                            <Button x:Name="GMinusButton" Content="-" Click="GMinusButton_OnClick" Focusable="False"/>
-                            <Label x:Name="BLabel" Content="B"  Foreground="Blue"/>-->
                             <Label x:Name="SizeLabel"
                                    Content="Size"
-                                   FontSize="14"
+                                   FontSize="16"
+                                   FontWeight="Bold"
                                    Grid.Column="0"
+                                   Padding="5,5,0,0"
                                    HorizontalAlignment="Left"
+                                   Style="{StaticResource MaterialDesignLabel}"
                             />
-                            <TextBlock x:Name="SizeValue"                                       
+                            <TextBlock x:Name="SizeValue"
                                        Grid.Column="1"
-                            />
+                                       FontSize="16"
+                                       FontWeight="Bold"
+                                       HorizontalAlignment="Right"
+                                       Style="{StaticResource MaterialDesignCharacterCounterTextBlock}"
+                            >8</TextBlock>
                             <Button x:Name="SizePlusButton"
                                     Content="+"
                                     Click="SizePlusButton_OnClick"
@@ -214,7 +248,7 @@
                                     Height="30"
                                     HorizontalAlignment="Right"
                             />
-                            
+
                             <Button x:Name="SizeMinusButton"
                                     Content="-"
                                     Click="SizeMinusButton_OnClick"
@@ -277,17 +311,23 @@
                                     Padding="0"
                                     Style="{StaticResource MaterialDesignOutlinedButton}"
                             />
-                        </Grid>                                               
-                        <Grid Margin="0,10,0,0">                           
+                        </Grid>
+                        <Grid Margin="0,10,0,0">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="40"></RowDefinition>
+                                <RowDefinition Height="40"></RowDefinition>
+                            </Grid.RowDefinitions>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition></ColumnDefinition>
-                                <ColumnDefinition></ColumnDefinition>                                
+                                <ColumnDefinition></ColumnDefinition>
                             </Grid.ColumnDefinitions>
                             <Button x:Name="AcceptChangesButton"
                                     Content="Accept"
                                     FontSize="14"
                                     Click="AcceptChangesButton_OnClick"
+                                    Height="30"
                                     Width="120"
+                                    Grid.Row="0"
                                     Grid.Column="1"
                                     Padding="0"
                                     Focusable="False"
@@ -296,11 +336,24 @@
                                     Content="Cancel"
                                     FontSize="14"
                                     Click="CancelChangesButton_OnClick"
+                                    Height="30"
                                     Width="120"
+                                    Grid.Row="0"
                                     Grid.Column="0"
                                     Padding="0"
+                                    Focusable="False"                                    
+                            />
+                            <Button x:Name="EscapeButton"
+                                    Content="Escape"
+                                    FontSize="14"
+                                    Click="CancelChangesButton_OnClick"
+                                    Height="30"
+                                    Width="120"
+                                    Grid.Row="1"
+                                    Grid.ColumnSpan="2"
+                                    Padding="0"
                                     Focusable="False"
-                                    Style="{StaticResource MaterialDesignFlatButton}"
+                                    Style="{StaticResource MaterialDesignOutlinedButton}"                            
                             />
                         </Grid>
                     </StackPanel>
