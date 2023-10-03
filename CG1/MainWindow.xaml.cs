@@ -486,13 +486,13 @@ public partial class MainWindow : Window
         //GPlusButton.Visibility = Visibility.Hidden;
         //GMinusButton.Visibility = Visibility.Hidden;
         //BLabel.Visibility = Visibility.Hidden;
-        BPlusButton.Visibility = Visibility.Hidden;
-        BMinusButton.Visibility = Visibility.Hidden;
+        //BPlusButton.Visibility = Visibility.Hidden;
+        //BMinusButton.Visibility = Visibility.Hidden;
         SizeLabel.Visibility = Visibility.Hidden;
         SizePlusButton.Visibility = Visibility.Hidden;
         SizeMinusButton.Visibility = Visibility.Hidden;
-        PaintingButton.Visibility = Visibility.Hidden;
-        ChangingButton.Visibility = Visibility.Visible;
+        //PaintingButton.Visibility = Visibility.Hidden;
+        //ChangingButton.Visibility = Visibility.Visible;
         if (_selectedGroupIndex == -1) return;
         _selectedPrimitiveIndex = _primitivesGroups[_selectedGroupIndex].Count;
     }
@@ -526,8 +526,8 @@ public partial class MainWindow : Window
         SizeLabel.Visibility = Visibility.Visible;
         SizePlusButton.Visibility = Visibility.Visible;
         SizeMinusButton.Visibility = Visibility.Visible;
-        PaintingButton.Visibility = Visibility.Visible;
-        ChangingButton.Visibility = Visibility.Hidden;
+        //PaintingButton.Visibility = Visibility.Visible;
+        //ChangingButton.Visibility = Visibility.Hidden;
         if (_selectedGroupIndex == -1) return;
         _selectedPrimitiveIndex = _primitivesGroups[_selectedGroupIndex].Count;
     }
