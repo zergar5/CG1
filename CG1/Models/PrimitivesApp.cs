@@ -1,12 +1,11 @@
 ﻿using CG1.Contexts;
-using CG1.Tools;
+using CG1.Models.Primitives;
+using SharpGL;
 using SharpGL.WPF;
 using System.Windows.Input;
 using System.Windows.Media;
-using CG1.Core.Primitives;
-using SharpGL;
 
-namespace CG1.Core;
+namespace CG1.Models;
 
 public class PrimitivesApp
 {
@@ -26,8 +25,28 @@ public class PrimitivesApp
         openGL.ClearColor(1f, 1f, 1f, 1f);
         openGL.Clear(OpenGL.GL_COLOR_BUFFER_BIT);
 
-        _context.SelectedGroup?.Highlight(openGL);
-
+        if (_context.SelectedGroup != null)
+        {
+            if (_context.SelectedPrimitiveIndex == _context.SelectedGroup.Count)
+            {
+                _context.SelectedGroup.Highlight(openGL);
+                if (_currentMode == Mode.Changing && _primitivesEditor.EditingGroup != null)
+                {
+                    _primitivesEditor.EditingGroup.Highlight(openGL);
+                    _primitivesEditor.EditingGroup.Draw(openGL);
+                }
+            }
+            else
+            {
+                _context.SelectedPrimitive?.Highlight(openGL);
+                if (_currentMode == Mode.Changing && _primitivesEditor.EditingPrimitive != null)
+                {
+                    _primitivesEditor.EditingPrimitive.Highlight(openGL);
+                    _primitivesEditor.EditingPrimitive.Draw(openGL);
+                }
+            }
+        }
+        
         foreach (var primitivesGroup in _context.Groups)
         {
             primitivesGroup.Draw(openGL);
@@ -52,7 +71,7 @@ public class PrimitivesApp
                 _context.SelectGroup(_context.Groups.Count - 1);
             }
             _context.AddPrimitive(
-                new Point(position.X, position.Y, 10, Color.FromArgb(255, 255, 0, 0))
+                new Point((float)position.X, (float)position.Y, 6, Colors.Red)
             );
         }
         else if (_currentMode == Mode.Changing)
@@ -91,13 +110,20 @@ public class PrimitivesApp
         }
         else if (_currentMode == Mode.Changing)
         {
-            //принятие изменений
+            if (_primitivesEditor.EditingGroup != null && _context.SelectedGroup != null)
+            {
+                _primitivesEditor.AcceptChanges(_context.SelectedGroup);
+            }
+            else if (_primitivesEditor.EditingPrimitive != null && _context.SelectedPrimitive != null)
+            {
+                _primitivesEditor.AcceptChanges(_context.SelectedPrimitive);
+            }
+            
         }
     }
 
     public void OnSelectionKeyDown(Key key)
     {
-        //Проверки что не пустой список и выбрано хотя бы что-то
         if (key == Key.Left)
         {
             _context.SelectPreviousGroup();
@@ -119,12 +145,12 @@ public class PrimitivesApp
         }
     }
 
-    public void OnMoveKeyDown(double x, double y)
+    public void OnMoveKeyDown(float x, float y)
     {
         _primitivesEditor.Move(x, y);
     }
 
-    public void OnChangeColorKeyDown(float a = 0, float r = 0, float g = 0, float b = 0)
+    public void OnChangeColorKeyDown(short a = 0, short r = 0, short g = 0, short b = 0)
     {
         _primitivesEditor.EditColor(a, r, g, b);
     }
@@ -153,18 +179,31 @@ public class PrimitivesApp
 
     public void OnDeleteKeyDown()
     {
-        
+        if (_context.SelectedGroup == null) return;
+        if (_context.SelectedPrimitiveIndex == _context.SelectedGroup.Count)
+        {
+            _context.RemoveGroupAt(_context.SelectedGroupIndex);
+        }
+        else
+        {
+            _context.RemovePrimitiveAt(_context.SelectedPrimitiveIndex);
+        }
+
+        if (_currentMode == Mode.Changing)
+        {
+            _primitivesEditor.StopEditing();
+        }
+
+        _context.Unselect();
     }
 
     public void OnReturnKeyDown()
     {
-        //Добавить проверку выбрано ли что-то
         if (_currentMode == Mode.Changing)
         {
-            _primitivesEditor.ReturnChanges();
             _primitivesEditor.StopEditing();
         }
-        
+
         _context.Unselect();
     }
 
@@ -177,6 +216,8 @@ public class PrimitivesApp
         else if (mode == Mode.Changing)
         {
             if (_context.SelectedGroup is not { Count: > 0 }) return;
+            _primitivesEditor.StartEditing(_context.SelectedGroup);
+            
             _currentMode = mode;
         }
     }

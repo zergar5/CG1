@@ -1,126 +1,112 @@
-﻿using SharpGL;
+﻿using System;
 using System.Windows.Media;
+using CG1.Extensions;
+using SharpGL;
 
-namespace CG1.Core.Primitives;
+namespace CG1.Models.Primitives;
 
 public class Point : IPrimitive
 {
-    private double X => _x + _tX;
-    private double Y => _y + _tY;
-    private readonly double _x;
-    private readonly double _y;
-    private double _tX;
-    private double _tY;
+    private float X => _x + _tX;
+    private float Y => _y + _tY;
 
-    private float Size => _size + _tSize;
-    private float _size = 10;
+    private float _x;
+    private float _y;
+    private float _tX;
+    private float _tY;
+
+    private float Size
+    {
+        get
+        {
+            var size = _size + _tSize;
+            if (size < 0) size = 1;
+            else if (size > 8) size = 8;
+            return size;
+        }
+    }
+
+    private float _size = 6;
     private float _tSize;
 
-    private Color Color => Color.FromArgb(
-        (byte)(_color.A + _tA), (byte)(_color.R + _tR),
-        (byte)(_color.G + _tG), (byte)(_color.B + _tB));
+    private Color Color => _color.ChangeColor(_tA, _tR, _tG, _tB);
 
-
-    private Color _color = Color.FromArgb(255, 255, 0, 0);
+    private Color _color = Colors.Red;
     private short _tA;
     private short _tR;
     private short _tG;
     private short _tB;
 
-    private double _angle;
-
     public Point() { }
 
-    public Point(double x, double y)
+    public Point(float x, float y)
     {
         _x = x;
         _y = y;
     }
 
-    public Point(double x, double y, float size) : this(x, y)
+    public Point(float x, float y, float size) : this(x, y)
     {
         _size = size;
     }
 
-    public Point(double x, double y, Color color) : this(x, y)
+    public Point(float x, float y, Color color) : this(x, y)
     {
         _color = color;
     }
 
-    public Point(double x, double y, double angle) : this(x, y)
-    {
-        _angle = angle;
-    }
-
-    public Point(double x, double y, float size, Color color) : this(x, y, size)
+    public Point(float x, float y, float size, Color color) : this(x, y, size)
     {
         _color = color;
-    }
-
-    public Point(double x, double y, float size, double angle) : this(x, y, size)
-    {
-        _angle = angle;
-    }
-
-    public Point(double x, double y, Color color, double angle) : this(x, y, color)
-    {
-        _angle = angle;
-    }
-
-    public Point(double x, double y, float size, Color color, double angle) : this(x, y, size, color)
-    {
-        _angle = angle;
-    }
-
-    public void Draw(OpenGL gl)
-    {
-        gl.PushMatrix();
-        gl.Translate(_x, _y, 0d);
-        //gl.Rotate(_angle, 0d, 0d, 1d);
-        gl.Color(Color.R, Color.G, Color.B, Color.A);
-        gl.PointSize(Size);
-        gl.Begin(OpenGL.GL_POINTS);
-        gl.Vertex(_tX, _tY, 0d);
-        gl.End();
-        gl.PopMatrix();
     }
 
     public void Draw(OpenGL gl, float size, Color color)
     {
         gl.PushMatrix();
-        gl.Translate(_x, _y, 0d);
-        //gl.Rotate(_angle, 0d, 0d, 1d);
+        gl.Translate(X, Y, 0d);
         gl.Color(color.R, color.G, color.B, color.A);
         gl.PointSize(size);
         gl.Begin(OpenGL.GL_POINTS);
-        gl.Vertex(_tX, _tY, 0d);
+        gl.Vertex(0, 0, 0d);
         gl.End();
         gl.PopMatrix();
     }
 
-    public void Highlight(OpenGL gl)
+    public void Draw(OpenGL gl)
     {
-        Draw(gl, Size + 4, Color.FromArgb(Color.A, 0, 0, 0));
+        Draw(gl, Size, Color);
     }
 
-    public void Move(double x, double y)
+    public void Highlight(OpenGL gl)
+    {
+        var size = Size + 4;
+        if (size > 8) size = 8f;
+        Draw(gl, size, Colors.Black);
+    }
+
+    public void Move(float x, float y)
     {
         _tX += x;
         _tY += y;
     }
 
-    public void Rotate(double angle)
+    public void SetPosition(float x, float y)
     {
-        _angle += angle;
+        _x = X;
+        _y = Y;
+        _tX = _x - x;
+        _tY = _y - y;
     }
 
-    public void SetColor(byte a, byte r, byte g, byte b)
+    public void Rotate(float angle) { }
+
+    public void SetColor(Color color)
     {
-        _color = Color.FromArgb(a, r, g, b);
-        _tA = 0;
-        _tR = 0;
-        _tG = 0;
-        _tB = 0;
+        _color = Color;
+        _tA = (short)(_color.A - color.A);
+        _tR = (short)(_color.R - color.R);
+        _tG = (short)(_color.G - color.G);
+        _tB = (short)(_color.B - color.B);
     }
 
     public Color GetColor()
@@ -128,7 +114,7 @@ public class Point : IPrimitive
         return Color;
     }
 
-    public void ChangeColor(float a, float r, float g, float b)
+    public void ChangeColor(short a, short r, short g, short b)
     {
         _tA += a;
         _tR += r;
@@ -138,18 +124,18 @@ public class Point : IPrimitive
 
     public void MakeTransparent()
     {
-        _color.A = 122;
+        _color.ScA = 0.5f;
     }
 
     public void MakeNonTransparent()
     {
-        _color.A = 255;
+        _color.ScA = 1f;
     }
 
     public void SetSize(float size)
     {
-        _size = size;
-        _tSize = 0;
+        _size = Size;
+        _tSize = _size - size;
     }
 
     public float GetSize()
@@ -164,14 +150,13 @@ public class Point : IPrimitive
 
     public void CancelChanges()
     {
-        _tX = 0d;
-        _tY = 0d;
-        _tSize = 0;
+        _tX = 0f;
+        _tY = 0f;
+        _tSize = 0f;
         _tA = 0;
         _tR = 0;
         _tG = 0;
         _tB = 0;
-        _angle = 0d;
     }
 
     public bool Contains(System.Windows.Point point)
@@ -188,6 +173,15 @@ public class Point : IPrimitive
 
     public IPrimitive Copy(IPrimitive primitive)
     {
-        return new Point(X, Y, Size, Color);
+        if (typeof(Point) == primitive.GetType())
+        {
+            primitive.CancelChanges();
+            primitive.SetPosition(X, Y);
+            primitive.SetColor(Color);
+            primitive.SetSize(Size);
+        }
+        else throw new InvalidCastException();
+        
+        return primitive;
     }
 }

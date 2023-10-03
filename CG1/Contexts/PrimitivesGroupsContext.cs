@@ -1,8 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Windows.Documents;
-using System.Windows.Markup;
-using CG1.Core;
-using CG1.Core.Primitives;
+﻿using CG1.Models;
+using CG1.Models.Primitives;
+using System.Collections.Generic;
 
 namespace CG1.Contexts;
 
@@ -28,6 +26,7 @@ public class PrimitivesGroupsContext
     {
         _primitivesGroups.Add(new PrimitivesGroup());
         SelectedGroupIndex = _primitivesGroups.Count - 1;
+        SelectedPrimitiveIndex = -1;
     }
 
     public void RemoveGroupAt(int index)
@@ -60,9 +59,12 @@ public class PrimitivesGroupsContext
     {
         if (SelectedGroupIndex == -1)
         {
-            SelectGroup(_primitivesGroups.Count - 1);
-            SelectedPrimitiveIndex = SelectedGroup.Count;
-            return;
+            if (_primitivesGroups.Count > 0)
+            {
+                SelectGroup(_primitivesGroups.Count - 1);
+                SelectedPrimitiveIndex = SelectedGroup.Count;
+                return;
+            }
         }
         if (SelectedGroupIndex >= _primitivesGroups.Count - 1) return;
         SelectedGroupIndex++;
@@ -73,11 +75,14 @@ public class PrimitivesGroupsContext
     {
         if (SelectedGroupIndex == -1)
         {
-            SelectGroup(0);
-            SelectedPrimitiveIndex = SelectedGroup.Count;
-            return;
+            if (_primitivesGroups.Count > 0)
+            {
+                SelectGroup(0);
+                SelectedPrimitiveIndex = SelectedGroup.Count;
+                return;
+            }
         }
-        if (SelectedGroupIndex <= 1) return;
+        if (SelectedGroupIndex <= 0) return;
         SelectedGroupIndex--;
         SelectedPrimitiveIndex = SelectedGroup.Count;
     }
@@ -85,6 +90,7 @@ public class PrimitivesGroupsContext
     public void AddPrimitive(IPrimitive primitive)
     {
         SelectedGroup.Add(primitive);
+        SelectedPrimitiveIndex = SelectedGroup.Count;
     }
 
     public void RemoveLastPrimitive()
@@ -105,8 +111,8 @@ public class PrimitivesGroupsContext
 
     public void SelectPrimitive(int index)
     {
-        if(SelectedGroupIndex < 0) return;
-        if(index < 0 || index > SelectedGroup.Count) return;
+        if (SelectedGroupIndex < 0) return;
+        if (index < 0 || index > SelectedGroup.Count) return;
         SelectedPrimitiveIndex = index;
     }
 

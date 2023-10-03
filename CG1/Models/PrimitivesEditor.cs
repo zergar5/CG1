@@ -1,59 +1,34 @@
-﻿using System.Diagnostics.Eventing.Reader;
-using System.Windows.Media;
-using CG1.Core;
-using CG1.Core.Primitives;
+﻿using CG1.Models.Primitives;
 
-namespace CG1.Tools;
+namespace CG1.Models;
 
 public class PrimitivesEditor
 {
-    public IPrimitive EditingPrimitive => _editingPrimitive;
-    public PrimitivesGroup EditingGroup => _editingGroup;
+    public IPrimitive? EditingPrimitive => _editingPrimitive;
+    public PrimitivesGroup? EditingGroup => _editingGroup;
 
     private IPrimitive? _editingPrimitive;
     private PrimitivesGroup? _editingGroup;
 
-    public PrimitivesEditor()
-    {
-        _editingGroup = new PrimitivesGroup();
-    }
-
     public void StartEditing(IPrimitive primitive)
     {
+        StopEditing();
         _editingPrimitive = primitive.Clone();
     }
 
     public void StartEditing(PrimitivesGroup primitivesGroup)
     {
-        _editingGroup = primitivesGroup.Copy(primitivesGroup);
+        StopEditing();
+        _editingGroup = primitivesGroup.Clone();
     }
 
-    public void StopEditing()
+    public void Move(float x, float y)
     {
-        _editingPrimitive = null;
-        _editingGroup = null;
-    }
-
-    public void CancelChanges()
-    {
-        if (_editingGroup != null) EditingGroup.;
+        if (_editingGroup != null) EditingGroup.Move(x, y);
         else if (_editingPrimitive != null) EditingPrimitive.Move(x, y);
     }
 
-    public void ReturnChanges()
-    {
-        ClearEditing();
-        if (_editingGroup != null) EditingGroup.;
-        else if (_editingPrimitive != null) EditingPrimitive.Move(x, y);
-    }
-
-    public void Move(double x, double y)
-    {
-        if(_editingGroup != null) EditingGroup.Move(x, y);
-        else if(_editingPrimitive != null) EditingPrimitive.Move(x, y);
-    }
-
-    public void EditColor(float a, float r, float g, float b)
+    public void EditColor(short a, short r, short g, short b)
     {
         if (_editingGroup != null) EditingGroup.ChangeColor(a, r, g, b);
         else if (_editingPrimitive != null) EditingPrimitive.ChangeColor(a, r, g, b);
@@ -65,7 +40,27 @@ public class PrimitivesEditor
         else if (_editingPrimitive != null) EditingPrimitive.ChangeSize(size);
     }
 
-    private void ClearEditing()
+    public void AcceptChanges(IPrimitive primitive)
+    {
+        primitive = _editingPrimitive;
+        StopEditing();
+        StartEditing(primitive);
+    }
+
+    public void AcceptChanges(PrimitivesGroup primitivesGroup)
+    {
+        primitivesGroup = _editingGroup;
+        StopEditing();
+        StartEditing(primitivesGroup);
+    }
+
+    public void CancelChanges()
+    {
+        if (_editingGroup != null) EditingGroup.CancelChanges();
+        else if (_editingPrimitive != null) EditingPrimitive.CancelChanges();
+    }
+
+    public void StopEditing()
     {
         _editingPrimitive = null;
         _editingGroup = null;
