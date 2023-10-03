@@ -12,12 +12,15 @@
         Padding="0"
         Margin="0"
         MinHeight="540"       
-        MinWidth="990"       
+        Width="Auto"       
 >
 
     <Grid Background="#ffdadada">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
         <sharpGL:OpenGLControl x:Name="glWindow"
@@ -37,13 +40,12 @@
             Padding="0"
             Margin="0"
             Width="290"
-            Height="540"
             Background="white"
-            VerticalAlignment="Center"
+            VerticalAlignment="Top"
             HorizontalAlignment="Right"
             Grid.Column="1"
         >
-            <TabControl Width="290">
+            <TabControl>
                 <TabItem>
                     <TabItem.Header>
                         <StackPanel Orientation="Horizontal">
