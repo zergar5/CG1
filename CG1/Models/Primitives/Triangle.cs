@@ -1,8 +1,4 @@
-﻿using System;
-using System.Windows;
-using SharpGL;
-
-namespace CG1.Core.Primitives;
+﻿namespace CG1.Core.Primitives;
 
 //public class Triangle : IPrimitive
 //{
