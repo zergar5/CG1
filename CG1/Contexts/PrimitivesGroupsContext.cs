@@ -13,7 +13,8 @@ public class PrimitivesGroupsContext
         get
         {
             if (SelectedGroup == null) return null;
-            return SelectedPrimitiveIndex < 0 ? null : SelectedGroup[SelectedPrimitiveIndex];
+            if (SelectedPrimitiveIndex < 0 || SelectedPrimitiveIndex >= SelectedGroup.Count) return null;
+            return SelectedGroup[SelectedPrimitiveIndex];
         }
     }
 
@@ -46,12 +47,14 @@ public class PrimitivesGroupsContext
     public void SelectGroup(int index)
     {
         if (index < 0 || index > _primitivesGroups.Count) return;
+        MakeNonTransparent();
         SelectedGroupIndex = index;
         SelectedPrimitiveIndex = SelectedGroup.Count;
     }
 
     public void SelectGroupAtCursor(System.Windows.Point position)
     {
+        MakeNonTransparent();
         SelectGroup(_primitivesGroups.FindIndex(p => p.Contains(position)));
     }
 
@@ -66,6 +69,7 @@ public class PrimitivesGroupsContext
                 return;
             }
         }
+        MakeNonTransparent();
         if (SelectedGroupIndex >= _primitivesGroups.Count - 1) return;
         SelectedGroupIndex++;
         SelectedPrimitiveIndex = SelectedGroup.Count;
@@ -82,6 +86,7 @@ public class PrimitivesGroupsContext
                 return;
             }
         }
+        MakeNonTransparent();
         if (SelectedGroupIndex <= 0) return;
         SelectedGroupIndex--;
         SelectedPrimitiveIndex = SelectedGroup.Count;
@@ -113,43 +118,73 @@ public class PrimitivesGroupsContext
     {
         if (SelectedGroupIndex < 0) return;
         if (index < 0 || index > SelectedGroup.Count) return;
+        MakeNonTransparent();
         SelectedPrimitiveIndex = index;
     }
 
     public void SelectPrimitiveAtCursor(System.Windows.Point position)
     {
         SelectGroupAtCursor(position);
-        if (SelectedGroupIndex > 0) SelectPrimitive(SelectedGroup.FindIndex(position));
-
+        if (SelectedGroupIndex >= 0) SelectPrimitive(SelectedGroup.FindIndex(position));
     }
 
     public void SelectNextPrimitive()
     {
-        if (SelectedGroupIndex <= 0) return;
+        if (SelectedGroupIndex < 0) return;
         if (SelectedPrimitiveIndex == SelectedGroup.Count || SelectedPrimitiveIndex == -1)
         {
             SelectPrimitive(SelectedGroup.Count - 1);
             return;
         }
+        MakeNonTransparent();
         if (SelectedPrimitiveIndex >= SelectedGroup.Count - 1) return;
-        SelectedGroupIndex++;
+        SelectedPrimitiveIndex++;
     }
 
     public void SelectPreviousPrimitive()
     {
-        if (SelectedGroupIndex <= 0) return;
+        if (SelectedGroupIndex < 0) return;
         if (SelectedPrimitiveIndex == SelectedGroup.Count || SelectedPrimitiveIndex == -1)
         {
             SelectPrimitive(0);
             return;
         }
-        if (SelectedPrimitiveIndex <= 1) return;
+        MakeNonTransparent();
+        if (SelectedPrimitiveIndex <= 0) return;
         SelectedPrimitiveIndex--;
     }
 
     public void Unselect()
     {
+        MakeNonTransparent();
         SelectedGroupIndex = -1;
         SelectedPrimitiveIndex = -1;
+    }
+
+    public void CancelChanges()
+    {
+        MakeNonTransparent();
+        if (SelectedGroupIndex == -1) return;
+        if (SelectedPrimitiveIndex == SelectedGroup.Count)
+        {
+            SelectedGroup.CancelChanges();
+        }
+        else if (SelectedPrimitiveIndex != -1)
+        {
+            SelectedPrimitive.CancelChanges();
+        }
+    }
+
+    private void MakeNonTransparent()
+    {
+        if (SelectedGroupIndex == -1) return;
+        if (SelectedPrimitiveIndex == SelectedGroup.Count)
+        {
+            SelectedGroup.MakeNonTransparent();
+        }
+        else if (SelectedPrimitiveIndex != -1)
+        {
+            SelectedPrimitive.MakeNonTransparent();
+        }
     }
 }

@@ -14,14 +14,16 @@ public class PrimitivesEditor
     {
         StopEditing();
         _editingPrimitive = primitive.Clone();
+        primitive.MakeTransparent();
     }
 
     public void StartEditing(PrimitivesGroup primitivesGroup)
     {
         StopEditing();
         _editingGroup = primitivesGroup.Clone();
+        primitivesGroup.MakeTransparent();
     }
-
+    
     public void Move(float x, float y)
     {
         if (_editingGroup != null) EditingGroup.Move(x, y);
@@ -40,24 +42,9 @@ public class PrimitivesEditor
         else if (_editingPrimitive != null) EditingPrimitive.ChangeSize(size);
     }
 
-    public void AcceptChanges(IPrimitive primitive)
-    {
-        primitive = _editingPrimitive;
-        StopEditing();
-        StartEditing(primitive);
-    }
-
-    public void AcceptChanges(PrimitivesGroup primitivesGroup)
-    {
-        primitivesGroup = _editingGroup;
-        StopEditing();
-        StartEditing(primitivesGroup);
-    }
-
     public void CancelChanges()
     {
-        if (_editingGroup != null) EditingGroup.CancelChanges();
-        else if (_editingPrimitive != null) EditingPrimitive.CancelChanges();
+        StopEditing();
     }
 
     public void StopEditing()

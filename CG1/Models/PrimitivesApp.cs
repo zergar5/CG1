@@ -82,8 +82,6 @@ public class PrimitivesApp
                 _primitivesEditor.StartEditing(_context.SelectedPrimitive);
             }
         }
-
-        args.Handled = true;
     }
     public void OnMouseDoubleClick(OpenGLControl gl, MouseButtonEventArgs args)
     {
@@ -98,8 +96,6 @@ public class PrimitivesApp
                 _primitivesEditor.StartEditing(_context.SelectedGroup);
             }
         }
-
-        args.Handled = true;
     }
 
     public void OnEnterKeyDown()
@@ -112,13 +108,17 @@ public class PrimitivesApp
         {
             if (_primitivesEditor.EditingGroup != null && _context.SelectedGroup != null)
             {
-                _primitivesEditor.AcceptChanges(_context.SelectedGroup);
+                _context.Groups[_context.SelectedGroupIndex] = _primitivesEditor.EditingGroup;
+                _context.SelectedGroup.MakeNonTransparent();
+                _primitivesEditor.StartEditing(_context.SelectedGroup);
             }
             else if (_primitivesEditor.EditingPrimitive != null && _context.SelectedPrimitive != null)
             {
-                _primitivesEditor.AcceptChanges(_context.SelectedPrimitive);
+                _context.Groups[_context.SelectedGroupIndex][_context.SelectedPrimitiveIndex] = 
+                    _primitivesEditor.EditingPrimitive;
+                _context.SelectedPrimitive.MakeNonTransparent();
+                _primitivesEditor.StartEditing(_context.SelectedPrimitive);
             }
-            
         }
     }
 
@@ -127,20 +127,29 @@ public class PrimitivesApp
         if (key == Key.Left)
         {
             _context.SelectPreviousGroup();
+            if (_currentMode != Mode.Changing || _context.SelectedGroup == null) return;
+            _primitivesEditor.StartEditing(_context.SelectedGroup);
         }
         else if (key == Key.Right)
         {
             _context.SelectNextGroup();
+            if (_currentMode != Mode.Changing || _context.SelectedGroup == null) return;
+            _primitivesEditor.StartEditing(_context.SelectedGroup);
         }
         else if (_currentMode == Mode.Changing)
         {
             if (key == Key.Up)
             {
                 _context.SelectPreviousPrimitive();
+                if (_context.SelectedPrimitive == null) return;
+                
+                _primitivesEditor.StartEditing(_context.SelectedPrimitive);
             }
             else if (key == Key.Down)
             {
                 _context.SelectNextPrimitive();
+                if (_context.SelectedPrimitive == null) return;
+                _primitivesEditor.StartEditing(_context.SelectedPrimitive);
             }
         }
     }
@@ -174,6 +183,13 @@ public class PrimitivesApp
         else if (_currentMode == Mode.Changing)
         {
             _primitivesEditor.CancelChanges();
+            _context.CancelChanges();
+            if (_context.SelectedGroup == null) return;
+            if (_context.SelectedPrimitive != null)
+            {
+                _primitivesEditor.StartEditing(_context.SelectedPrimitive);
+            }
+            else _primitivesEditor.StartEditing(_context.SelectedGroup);
         }
     }
 
@@ -211,13 +227,17 @@ public class PrimitivesApp
     {
         if (mode == Mode.Painting)
         {
+            _primitivesEditor.StopEditing();
+
+            if (_context.SelectedGroup != null) _context.SelectGroup(_context.SelectedGroupIndex);
+            else if (_context.Groups.Count > 0) _context.SelectGroup(_context.Groups.Count - 1);
+            else _context.Unselect();
             _currentMode = mode;
         }
         else if (mode == Mode.Changing)
         {
             if (_context.SelectedGroup is not { Count: > 0 }) return;
             _primitivesEditor.StartEditing(_context.SelectedGroup);
-            
             _currentMode = mode;
         }
     }
