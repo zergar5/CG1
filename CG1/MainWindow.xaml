@@ -205,7 +205,7 @@
                     <StackPanel>
                         <Grid>
                             <ListView Name="GroupsTable"
-                                      ItemsSource="{Binding ContextView.Views}"
+                                      ItemsSource="{Binding Views}"
                             >
                                 <ListView.View>
                                     <GridView>
