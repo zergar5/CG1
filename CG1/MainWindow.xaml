@@ -33,6 +33,7 @@
                                Padding="0"
                                Margin="0"
                                Grid.Column="0"
+                               Grid.Row="0"
                                VerticalAlignment="Center"
                                HorizontalAlignment="Left"
         />
@@ -44,6 +45,7 @@
             VerticalAlignment="Top"
             HorizontalAlignment="Right"
             Grid.Column="1"
+            Grid.Row="0"
         >
             <TabControl>
                 <TabItem>
@@ -90,7 +92,6 @@
                                    Grid.Column="0"
                                    Padding="5,0,0,0"
                                    HorizontalAlignment="Left"
-                                   
                             />
                             <TextBlock                                       
                                        Grid.Column="1"
@@ -373,7 +374,7 @@
                             <Button x:Name="EscapeButton"
                                     Content="Escape"
                                     FontSize="14"
-                                    Click="CancelChangesButton_OnClick"
+                                    Click="EscapeButton_OnClick"
                                     Height="30"
                                     Width="120"
                                     Grid.Row="1"

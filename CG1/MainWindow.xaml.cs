@@ -61,7 +61,6 @@ public partial class MainWindow : Window
         if (args.Key == Key.Enter)
         {
             _primitivesApp.OnEnterKeyDown();
-            args.Handled = true;
         }
         else if (args.Key is Key.Left or Key.Right or Key.Up or Key.Down)
         {
@@ -167,188 +166,123 @@ public partial class MainWindow : Window
         gl.LoadIdentity();
     }
 
-    private void ChangeModeToPainting()
-    {
-        if (_currentMode == Mode.Painting) return;
-        _currentMode = Mode.Painting;
-        ClearTemporaryPrimitive();
-        ClearTemporaryGroup();
-        AddGroupButton.Visibility = Visibility.Visible;
-        DeleteLastButton.Visibility = Visibility.Visible;
-        DeleteButton.Visibility = Visibility.Hidden;
-        PreviousPrimitiveButton.Visibility = Visibility.Hidden;
-        NextPrimitiveButton.Visibility = Visibility.Hidden;
-        AcceptChangesButton.Visibility = Visibility.Hidden;
-        CancelChangesButton.Visibility = Visibility.Hidden;
-        UpButton.Visibility = Visibility.Hidden;
-        LeftButton.Visibility = Visibility.Hidden;
-        DownButton.Visibility = Visibility.Hidden;
-        RightButton.Visibility = Visibility.Hidden;
-        //RLabel.Visibility = Visibility.Hidden;
-        //RPlusButton.Visibility = Visibility.Hidden;
-        //RMinusButton.Visibility = Visibility.Hidden;
-        //GLabel.Visibility = Visibility.Hidden;
-        //GPlusButton.Visibility = Visibility.Hidden;
-        //GMinusButton.Visibility = Visibility.Hidden;
-        //BLabel.Visibility = Visibility.Hidden;
-        //BPlusButton.Visibility = Visibility.Hidden;
-        //BMinusButton.Visibility = Visibility.Hidden;
-        SizeLabel.Visibility = Visibility.Hidden;
-        SizePlusButton.Visibility = Visibility.Hidden;
-        SizeMinusButton.Visibility = Visibility.Hidden;
-        //PaintingButton.Visibility = Visibility.Hidden;
-        //ChangingButton.Visibility = Visibility.Visible;
-        if (_selectedGroupIndex == -1) return;
-        _selectedPrimitiveIndex = _primitivesGroups[_selectedGroupIndex].Count;
-    }
-
-    private void ChangeModeToChanging()
-    {
-        if (_currentMode == Mode.Changing) return;
-        _currentMode = Mode.Changing;
-        ClearTemporaryGroup();
-        CreateTemporaryGroup();
-        AddGroupButton.Visibility = Visibility.Hidden;
-        DeleteLastButton.Visibility = Visibility.Hidden;
-        DeleteButton.Visibility = Visibility.Visible;
-        PreviousPrimitiveButton.Visibility = Visibility.Visible;
-        NextPrimitiveButton.Visibility = Visibility.Visible;
-        AcceptChangesButton.Visibility = Visibility.Visible;
-        CancelChangesButton.Visibility = Visibility.Visible;
-        UpButton.Visibility = Visibility.Visible;
-        LeftButton.Visibility = Visibility.Visible;
-        DownButton.Visibility = Visibility.Visible;
-        RightButton.Visibility = Visibility.Visible;
-        //RLabel.Visibility = Visibility.Visible;
-        //RPlusButton.Visibility = Visibility.Visible;
-        //RMinusButton.Visibility = Visibility.Visible;
-        //GLabel.Visibility = Visibility.Visible;
-        //GPlusButton.Visibility = Visibility.Visible;
-        //GMinusButton.Visibility = Visibility.Visible;
-        //BLabel.Visibility = Visibility.Visible;
-        //BPlusButton.Visibility = Visibility.Visible;
-        //BMinusButton.Visibility = Visibility.Visible;
-        SizeLabel.Visibility = Visibility.Visible;
-        SizePlusButton.Visibility = Visibility.Visible;
-        SizeMinusButton.Visibility = Visibility.Visible;
-        //PaintingButton.Visibility = Visibility.Visible;
-        //ChangingButton.Visibility = Visibility.Hidden;
-        if (_selectedGroupIndex == -1) return;
-        _selectedPrimitiveIndex = _primitivesGroups[_selectedGroupIndex].Count;
-    }
-
     private void AddGroupButton_OnClick(object sender, RoutedEventArgs e)
     {
-        AddGroup();
+        _primitivesApp.OnEnterKeyDown();
     }
 
     private void DeleteLastButton_OnClick(object sender, RoutedEventArgs e)
     {
-        DeleteLastGroupOrPrimitive();
+        _primitivesApp.OnCancelActionKeyDown();
     }
 
     private void DeleteButton_OnClick(object sender, RoutedEventArgs e)
     {
-        DeleteSelectedGroupOrPrimitive();
+        _primitivesApp.OnDeleteKeyDown();
     }
 
     private void PreviousGroupButton_OnClick(object sender, RoutedEventArgs e)
     {
-        SelectPreviousGroup();
+        _primitivesApp.OnSelectionKeyDown(Key.Left);
     }
 
     private void NextGroupButton_OnClick(object sender, RoutedEventArgs e)
     {
-        SelectNextGroup();
+        _primitivesApp.OnSelectionKeyDown(Key.Right);
     }
 
     private void PreviousPrimitiveButton_OnClick(object sender, RoutedEventArgs e)
     {
-        SelectPreviousPrimitive();
+        _primitivesApp.OnSelectionKeyDown(Key.Up);
     }
 
     private void NextPrimitiveButton_OnClick(object sender, RoutedEventArgs e)
     {
-        SelectNextPrimitive();
+        _primitivesApp.OnSelectionKeyDown(Key.Down);
     }
 
     private void AcceptChangesButton_OnClick(object sender, RoutedEventArgs e)
     {
-        AcceptChanges();
+        _primitivesApp.OnEnterKeyDown();
     }
 
     private void CancelChangesButton_OnClick(object sender, RoutedEventArgs e)
     {
-        CancelChanges();
+        _primitivesApp.OnCancelActionKeyDown();
     }
 
     private void UpButton_OnClick(object sender, RoutedEventArgs e)
     {
-        MovePrimitiveOrGroup(0d, 5d);
+        _primitivesApp.OnMoveKeyDown(0f, 5f);
     }
 
     private void LeftButton_OnClick(object sender, RoutedEventArgs e)
     {
-        MovePrimitiveOrGroup(-5d, 0d);
+        _primitivesApp.OnMoveKeyDown(-5f, 0f);
     }
 
     private void DownButton_OnClick(object sender, RoutedEventArgs e)
     {
-        MovePrimitiveOrGroup(0d, -5d);
+        _primitivesApp.OnMoveKeyDown(0f, -5f);
     }
 
     private void RightButton_OnClick(object sender, RoutedEventArgs e)
     {
-        MovePrimitiveOrGroup(5d, 0d);
+        _primitivesApp.OnMoveKeyDown(5f, 0f);
     }
 
     private void RPlusButton_OnClick(object sender, RoutedEventArgs e)
     {
-        ChangeColorOfPrimitiveOrGroup(0, 15, 0, 0);
+        _primitivesApp.OnChangeColorKeyDown(r: 15);
     }
 
     private void RMinusButton_OnClick(object sender, RoutedEventArgs e)
     {
-        ChangeColorOfPrimitiveOrGroup(0, -15, 0, 0);
+        _primitivesApp.OnChangeColorKeyDown(r: -15);
     }
 
     private void GPlusButton_OnClick(object sender, RoutedEventArgs e)
     {
-        ChangeColorOfPrimitiveOrGroup(0, 0, 15, 0);
+        _primitivesApp.OnChangeColorKeyDown(g: 15);
     }
 
     private void GMinusButton_OnClick(object sender, RoutedEventArgs e)
     {
-        ChangeColorOfPrimitiveOrGroup(0, 0, -15, 0);
+        _primitivesApp.OnChangeColorKeyDown(g: -15);
     }
 
     private void BPlusButton_OnClick(object sender, RoutedEventArgs e)
     {
-        ChangeColorOfPrimitiveOrGroup(0, 0, 0, 15);
+        _primitivesApp.OnChangeColorKeyDown(b: 15);
     }
 
     private void BMinusButton_OnClick(object sender, RoutedEventArgs e)
     {
-        ChangeColorOfPrimitiveOrGroup(0, 0, 0, -15);
+        _primitivesApp.OnChangeColorKeyDown(b: -15);
     }
 
     private void SizePlusButton_OnClick(object sender, RoutedEventArgs e)
     {
-        ChangeSizeOfPrimitiveOrGroup(1f);
+        _primitivesApp.OnSizeKeyDown(1f);
     }
 
     private void SizeMinusButton_OnClick(object sender, RoutedEventArgs e)
     {
-        ChangeSizeOfPrimitiveOrGroup(-1f);
+        _primitivesApp.OnSizeKeyDown(-1f);
     }
 
     private void PaintingButton_OnClick(object sender, RoutedEventArgs e)
     {
-        ChangeModeToPainting();
+        _primitivesApp.SetMode(Mode.Painting);
     }
 
     private void ChangingButton_OnClick(object sender, RoutedEventArgs e)
     {
-        ChangeModeToChanging();
+        _primitivesApp.SetMode(Mode.Changing);
+    }
+
+    private void EscapeButton_OnClick(object sender, RoutedEventArgs e)
+    {
+        _primitivesApp.OnReturnKeyDown();
     }
 }
