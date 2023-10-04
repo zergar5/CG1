@@ -37,17 +37,18 @@
                                Grid.Column="0"
         />
         <StackPanel Width="Auto" Grid.Column="1">
-            <ListView ScrollViewer.VerticalScrollBarVisibility="Auto"
-                      ItemsSource="{DynamicResource ResourceKey=phones}"                      
+            <ListView Name="GroupsTable"
+                      ScrollViewer.VerticalScrollBarVisibility="Auto"
+                      ItemsSource="{Binding Views}"                      
                       MaxHeight="300">
                 <ListView.View>
                     <GridView>
-                        <GridViewColumn DisplayMemberBinding="{Binding Path=NumberOfGroup}"
+                        <GridViewColumn DisplayMemberBinding="{Binding Number}"
                                                         Width="Auto"                                                        
                                         >
                             №
                         </GridViewColumn>
-                        <GridViewColumn DisplayMemberBinding="{Binding Path=Primitives}"
+                        <GridViewColumn DisplayMemberBinding="{Binding PrimitivesCount}"
                                                         Width="Auto"
                                         >
                             Number of primitives
@@ -75,11 +76,9 @@
                             </StackPanel>
                         </TabItem.Header>
                         <StackPanel>
-
                             <Grid Margin="3,3,6,0">
                                 <Grid.RowDefinitions>
-                                    <RowDefinition Height="30"></RowDefinition>
-                                    <RowDefinition Height="30"></RowDefinition>
+                                    <RowDefinition Height="30"></RowDefinition>                                   
                                 </Grid.RowDefinitions>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition></ColumnDefinition>
@@ -116,42 +115,7 @@
                                     Width="40"
                                     Height="25"
                                     HorizontalAlignment="Right"
-                            />
-                                <Label 
-                                   Content="Primitive"
-                                   FontSize="16"
-                                   FontWeight="Bold"
-                                   Grid.Column="0"
-                                   Grid.Row="1"
-                                   Padding="5,0,0,0"
-                                   HorizontalAlignment="Left"
-                            />
-                                <TextBlock                                       
-                                       Grid.Column="1"
-                                       Grid.Row="1"
-                            />
-                                <Button x:Name="PreviousPrimitiveButton"
-                                    Click="PreviousPrimitiveButton_OnClick"
-                                    Content="Prev"
-                                    Focusable="False"
-                                    Grid.Row="1"
-                                    Grid.Column="2"
-                                    Padding="0"
-                                    Width="40"
-                                    Height="25"
-                                    HorizontalAlignment="Left"
-                            />
-                                <Button x:Name="NextPrimitiveButton"
-                                    Click="NextPrimitiveButton_OnClick"
-                                    Content="Next"
-                                    Focusable="False"
-                                    Grid.Row="1"
-                                    Grid.Column="2"
-                                    Padding="0"
-                                    Width="40"
-                                    Height="25"
-                                    HorizontalAlignment="Right"
-                            />
+                            />                                
                             </Grid>
                             <Grid Margin="0,10,0,0">
                                 <Grid.RowDefinitions>
@@ -201,6 +165,83 @@
                             </StackPanel>
                         </TabItem.Header>
                         <StackPanel>
+                            <Grid Margin="3,3,6,0">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="30"></RowDefinition>
+                                    <RowDefinition Height="30"></RowDefinition>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition></ColumnDefinition>
+                                    <ColumnDefinition Width="90"></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+                                <Label 
+                                   Content="Group"
+                                   FontSize="16"
+                                   FontWeight="Bold"
+                                   Grid.Column="0"
+                                   Padding="5,0,0,0"
+                                   HorizontalAlignment="Left"
+                                   
+                            />
+                                <TextBlock                                       
+                                       Grid.Column="1"
+                            />
+                                <Button
+                                    Click="PreviousGroupButton_OnClick"
+                                    Content="Prev"
+                                    Focusable="False"
+                                    Grid.Column="2"
+                                    Padding="0"
+                                    Width="40"
+                                    Height="25"
+                                    HorizontalAlignment="Left"
+                            />
+                                <Button
+                                    Click="NextGroupButton_OnClick"
+                                    Content="Next"
+                                    Focusable="False"
+                                    Grid.Column="2"
+                                    Padding="0"
+                                    Width="40"
+                                    Height="25"
+                                    HorizontalAlignment="Right"
+                            />
+                                <Label 
+                                   Content="Primitive"
+                                   FontSize="16"
+                                   FontWeight="Bold"
+                                   Grid.Column="0"
+                                   Grid.Row="1"
+                                   Padding="5,0,0,0"
+                                   HorizontalAlignment="Left"
+                            />
+                                <TextBlock                                       
+                                       Grid.Column="1"
+                                       Grid.Row="1"
+                            />
+                                <Button
+                                    Click="PreviousPrimitiveButton_OnClick"
+                                    Content="Prev"
+                                    Focusable="False"
+                                    Grid.Row="1"
+                                    Grid.Column="2"
+                                    Padding="0"
+                                    Width="40"
+                                    Height="25"
+                                    HorizontalAlignment="Left"
+                            />
+                                <Button
+                                    Click="NextPrimitiveButton_OnClick"
+                                    Content="Next"
+                                    Focusable="False"
+                                    Grid.Row="1"
+                                    Grid.Column="2"
+                                    Padding="0"
+                                    Width="40"
+                                    Height="25"
+                                    HorizontalAlignment="Right"
+                            />
+                            </Grid>
                             <Grid Margin="0,3,0,0">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition></ColumnDefinition>
@@ -350,7 +391,7 @@
                                 <Button x:Name="EscapeButton"
                                     Content="Escape"
                                     FontSize="14"
-                                    Click="CancelChangesButton_OnClick"
+                                    Click="EscapeButton_OnClick"
                                     Height="30"
                                     Width="120"
                                     Grid.Row="1"
