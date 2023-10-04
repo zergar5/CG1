@@ -40,7 +40,8 @@
             <ListView Name="GroupsTable"
                       ScrollViewer.VerticalScrollBarVisibility="Auto"
                       ItemsSource="{Binding Views}"                      
-                      MaxHeight="300">
+                      MaxHeight="300"
+                      SelectionChanged="GroupsTable_OnSelectionChanged">
                 <ListView.View>
                     <GridView>
                         <GridViewColumn DisplayMemberBinding="{Binding Number}"
@@ -258,7 +259,7 @@
                                 />
                                 <materialDesign:ColorPicker
                                     Grid.Row="1"
-                                    ColorChanged="ColorPicker_ColorChanged"
+                                    ColorChanged="ColorPicker_OnColorChanged"
                                 >
 
                                 </materialDesign:ColorPicker>

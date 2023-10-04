@@ -6,6 +6,8 @@ using System.Windows;
 using System.Windows.Input;
 using CG1.ViewModels;
 using System.Windows.Controls;
+using System.Windows.Media;
+using MaterialDesignThemes.Wpf;
 
 namespace CG1;
 
@@ -295,7 +297,7 @@ public partial class MainWindow : Window
         _gl.Disable(OpenGL.GL_POINT_SMOOTH);
     }
 
-    private void TabControl_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+    private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
         var tab = (TabControl)sender;
         if(tab.SelectedIndex == 0)
@@ -310,9 +312,15 @@ public partial class MainWindow : Window
         }
     }
 
-    private void ColorPicker_ColorChanged(object sender, RoutedPropertyChangedEventArgs<System.Windows.Media.Color> e)
+    private void ColorPicker_OnColorChanged(object sender, RoutedPropertyChangedEventArgs<Color> e)
     {
-        var color = e.NewValue;
-        PrimitivesApp.OnColorPickerColorChanged(color);
+        var colorPicker = (ColorPicker)sender;
+        var color = colorPicker.Color;
+        PrimitivesApp.OnColorPickerColorChanged(e.NewValue);
+    }
+    private void GroupsTable_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        var listView = (ListView)sender;
+        PrimitivesApp.OnGroupSelected(listView.SelectedIndex);
     }
 }

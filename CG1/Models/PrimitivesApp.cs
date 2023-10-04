@@ -223,6 +223,12 @@ public class PrimitivesApp
         _context.Unselect();
     }
 
+    public void OnGroupSelected(int index)
+    {
+        if(_context.SelectedGroupIndex == index) return;
+        _context.SelectGroup(index);
+    }
+
     public void OnColorPickerColorChanged(Color color)
     {
         if(CurrentMode == Mode.Changing)
