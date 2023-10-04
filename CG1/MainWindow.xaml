@@ -242,6 +242,9 @@
                                     HorizontalAlignment="Right"
                             />
                             </Grid>
+                            <materialDesign:ColorPicker>
+                                
+                            </materialDesign:ColorPicker>
                             <Grid Margin="0,3,0,0">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition></ColumnDefinition>
@@ -257,8 +260,10 @@
                                    Style="{StaticResource MaterialDesignLabel}"
                             />
                                 <ToggleButton
-                                Grid.Column="2"
-                                HorizontalAlignment="Center"
+                                    Checked="ToggleButton_Checked"
+                                    Unchecked="ToggleButton_Unchecked"
+                                    Grid.Column="2"
+                                    HorizontalAlignment="Center"
                             />
                             </Grid>
                             <Grid Margin="0,3,6,0">
