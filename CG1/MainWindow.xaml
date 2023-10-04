@@ -34,11 +34,11 @@
                                Padding="0"
                                Margin="0"
                                Grid.Column="0"
-        />
+        />        
         <StackPanel Width="Auto" Grid.Column="1">
-            <ListView 
+            <ListView ScrollViewer.VerticalScrollBarVisibility="Auto"
                       ItemsSource="{DynamicResource ResourceKey=phones}"                      
-                      Height="Auto">
+                      MaxHeight="300">
                 <ListView.View>
                     <GridView>
                         <GridViewColumn DisplayMemberBinding="{Binding Path=NumberOfGroup}"
@@ -52,19 +52,19 @@
                             Number of primitives
                         </GridViewColumn>
                     </GridView>
-                </ListView.View>
+                </ListView.View>                
                 <ListView.Resources>
-
-                </ListView.Resources>
-            </ListView>
+                    
+                </ListView.Resources>                              
+            </ListView>            
             <Border
-            Padding="0"
-            Margin="0"
-            Height="Auto"
-            Width="290"
-            Background="white"
-            VerticalAlignment="Top"
-            HorizontalAlignment="Right"
+                Padding="0"
+                Margin="0"
+                MinHeight="450"
+                Width="290"
+                Background="white"
+                VerticalAlignment="Top"
+                HorizontalAlignment="Right"
             >
                 <TabControl>
                     <TabItem>
