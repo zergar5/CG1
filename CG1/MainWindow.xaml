@@ -6,6 +6,7 @@
         xmlns:sharpGL="clr-namespace:SharpGL.WPF;assembly=SharpGL.WPF"
         xmlns:local="clr-namespace:CG1"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:viewModels="clr-namespace:CG1.ViewModels"
         mc:Ignorable="d"
         KeyDown="GlWindowOnKeyDown"
         Title="Компьютерная графика"
@@ -23,13 +24,14 @@
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
-        <sharpGL:OpenGLControl x:Name="glWindow"
+        <sharpGL:OpenGLControl x:Name="GlWindow"
                                OpenGLDraw="OpenGLDraw"
                                OpenGLInitialized="OpenGLInitialized"
                                Resized="OpenGLControlResized"
                                MouseDown="GlWindowOnMouseClick"
                                KeyDown="GlWindowOnKeyDown"
                                Width="700"
+                               Height="540"
                                Padding="0"
                                Margin="0"
                                Grid.Column="0"
@@ -60,14 +62,15 @@
                                 <ListView.View>
                                     <GridView>
                                         <GridViewColumn DisplayMemberBinding="{Binding Path=NumberOfGroup}"
-                                                        Width="Auto"                                                        
+                                                        Width="Auto"
+                                                        Header="№"
                                         >
-                                        №
+
                                         </GridViewColumn>
                                         <GridViewColumn DisplayMemberBinding="{Binding Path=Primitives}"
-                                                        Width="Auto"
+                                                        Header="Number of primitives"
+                                                        Width="Auto"                                                       
                                         >
-                                        Number of primitives
                                         </GridViewColumn>
                                     </GridView>
                                 </ListView.View>
@@ -201,18 +204,18 @@
                     </TabItem.Header>
                     <StackPanel>
                         <Grid>
-                            <ListView Name="groupsList"
-                                      ItemsSource="{DynamicResource ResourceKey=group}"
+                            <ListView Name="GroupsTable"
+                                      ItemsSource="{Binding ContextView.Views}"
                             >
                                 <ListView.View>
                                     <GridView>
-                                        <GridViewColumn DisplayMemberBinding="{Binding Path=NumberOfGroup}"
+                                        <GridViewColumn DisplayMemberBinding="{Binding Number}"
                                                         Width="Auto"
                                                         Header="№"
                                         >
                                             
                                         </GridViewColumn>
-                                        <GridViewColumn DisplayMemberBinding="{Binding Path=Primitives}"
+                                        <GridViewColumn DisplayMemberBinding="{Binding PrimitivesCount}"
                                                         Header="Number of primitives"
                                                         Width="Auto"                                                       
                                         >                                            
