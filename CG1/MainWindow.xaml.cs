@@ -306,4 +306,9 @@ public partial class MainWindow : Window
     {
 
     }
+
+    private void ColorPicker_ColorChanged(object sender, RoutedPropertyChangedEventArgs<System.Windows.Media.Color> e)
+    {
+
+    }
 }

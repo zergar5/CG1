@@ -256,7 +256,10 @@
                                    HorizontalAlignment="Center"
                                    Style="{StaticResource MaterialDesignLabel}"
                                 />
-                                <materialDesign:ColorPicker Grid.Row="1">
+                                <materialDesign:ColorPicker
+                                    Grid.Row="1"
+                                    ColorChanged="ColorPicker_ColorChanged"
+                                >
 
                                 </materialDesign:ColorPicker>
                             </Grid>
