@@ -16,7 +16,7 @@
         MinWidth="990"       
 >
 
-    <Grid Background="silver" Margin="0">
+    <Grid Background="white" Margin="0">
         <Grid.RowDefinitions>
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
@@ -68,7 +68,7 @@
                 VerticalAlignment="Top"
                 HorizontalAlignment="Right"
             >
-                <TabControl>
+                <TabControl SelectionChanged="TabControl_SelectionChanged">
                     <TabItem>
                         <TabItem.Header>
                             <StackPanel Orientation="Horizontal">
@@ -242,9 +242,25 @@
                                     HorizontalAlignment="Right"
                             />
                             </Grid>
-                            <materialDesign:ColorPicker>
-                                
-                            </materialDesign:ColorPicker>
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition></RowDefinition>
+                                    <RowDefinition></RowDefinition>
+                                </Grid.RowDefinitions>
+                                <Label
+                                   Content="Color of primitive"
+                                   FontSize="16"
+                                   FontWeight="Bold"
+                                   Padding="5,2,0,0"
+                                   Grid.Column="0"
+                                   HorizontalAlignment="Center"
+                                   Style="{StaticResource MaterialDesignLabel}"
+                                />
+                                <materialDesign:ColorPicker Grid.Row="1">
+
+                                </materialDesign:ColorPicker>
+                            </Grid>
+                           
                             <Grid Margin="0,3,0,0">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition></ColumnDefinition>
@@ -268,12 +284,12 @@
                             </Grid>
                             <Grid Margin="0,3,6,0">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition></ColumnDefinition>
-                                    <ColumnDefinition></ColumnDefinition>
+                                    <ColumnDefinition Width="130"></ColumnDefinition>
+                                    <ColumnDefinition Width="65"></ColumnDefinition>
                                     <ColumnDefinition></ColumnDefinition>
                                 </Grid.ColumnDefinitions>
                                 <Label x:Name="SizeLabel"
-                                   Content="Size"
+                                   Content="Size of primitive"
                                    FontSize="16"
                                    FontWeight="Bold"
                                    Grid.Column="0"

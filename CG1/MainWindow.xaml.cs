@@ -301,4 +301,9 @@ public partial class MainWindow : Window
     {
 
     }
+
+    private void TabControl_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+    {
+
+    }
 }
