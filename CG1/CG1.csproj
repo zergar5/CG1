@@ -9,12 +9,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="MainWindow.xaml~RFe0c1a709.TMP" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="MaterialDesignThemes" Version="4.9.0" />
     <PackageReference Include="SharpGL.WPF" Version="3.1.1" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="ModelsViews\" />
+    <Folder Include="ViewModels\" />
     <Folder Include="Extensions\" />
   </ItemGroup>
 

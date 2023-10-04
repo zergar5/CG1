@@ -4,23 +4,29 @@ using SharpGL;
 using SharpGL.WPF;
 using System.Windows;
 using System.Windows.Input;
+using CG1.ViewModels;
 
 namespace CG1;
 
 public partial class MainWindow : Window
 {
     private OpenGL _gl;
-    private readonly PrimitivesApp _primitivesApp;
+    public PrimitivesApp PrimitivesApp { get; }
+    public PrimitivesGroupsContextView ContextView { get; }
 
     public MainWindow()
     {
         InitializeComponent();
-        _primitivesApp = new PrimitivesApp(new PrimitivesGroupsContext(), new PrimitivesEditor());
+        ContextView = new PrimitivesGroupsContextView(GroupsTable, this);
+        PrimitivesApp = new PrimitivesApp(new PrimitivesGroupsContext(ContextView),
+            new PrimitivesEditor());
+
+        DataContext = ContextView;
     }
 
     private void OpenGLDraw(object sender, OpenGLRoutedEventArgs args)
     {
-        _primitivesApp.Render((OpenGLControl)sender, args);
+        PrimitivesApp.Render((OpenGLControl)sender, args);
     }
 
     private void OpenGLInitialized(object sender, OpenGLRoutedEventArgs args)
@@ -48,11 +54,11 @@ public partial class MainWindow : Window
 
         if (args.ClickCount == 1)
         {
-            _primitivesApp.OnMouseClick(gl, args);
+            PrimitivesApp.OnMouseClick(gl, args);
         }
         else if (args.ClickCount == 2)
         {
-            _primitivesApp.OnMouseDoubleClick(gl, args);
+            PrimitivesApp.OnMouseDoubleClick(gl, args);
         }
     }
 
@@ -60,76 +66,76 @@ public partial class MainWindow : Window
     {
         if (args.Key == Key.Enter)
         {
-            _primitivesApp.OnEnterKeyDown();
+            PrimitivesApp.OnEnterKeyDown();
         }
         else if (args.Key is Key.Left or Key.Right or Key.Up or Key.Down)
         {
-            _primitivesApp.OnSelectionKeyDown(args.Key);
+            PrimitivesApp.OnSelectionKeyDown(args.Key);
         }
         else if (args.Key == Key.W)
         {
-            _primitivesApp.OnMoveKeyDown(0f, 5f);
+            PrimitivesApp.OnMoveKeyDown(0f, 5f);
         }
         else if (args.Key == Key.A)
         {
-            _primitivesApp.OnMoveKeyDown(-5f, 0f);
+            PrimitivesApp.OnMoveKeyDown(-5f, 0f);
         }
         else if (args.Key == Key.S)
         {
-            _primitivesApp.OnMoveKeyDown(0f, -5f);
+            PrimitivesApp.OnMoveKeyDown(0f, -5f);
         }
         else if (args.Key == Key.D)
         {
-            _primitivesApp.OnMoveKeyDown(5f, 0f);
+            PrimitivesApp.OnMoveKeyDown(5f, 0f);
         }
         else if (args.Key == Key.P)
         {
-            _primitivesApp.SetMode(Mode.Painting);
+            PrimitivesApp.SetMode(Mode.Painting);
         }
         else if (args.Key == Key.C)
         {
-            _primitivesApp.SetMode(Mode.Changing);
+            PrimitivesApp.SetMode(Mode.Changing);
         }
         else if (args.Key == Key.R)
         {
             if ((Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control)
             {
-                _primitivesApp.OnChangeColorKeyDown(r: -15);
+                PrimitivesApp.OnChangeColorKeyDown(r: -15);
             }
             else
             {
-                _primitivesApp.OnChangeColorKeyDown(r: 15);
+                PrimitivesApp.OnChangeColorKeyDown(r: 15);
             }
         }
         else if (args.Key == Key.G)
         {
             if ((Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control)
             {
-                _primitivesApp.OnChangeColorKeyDown(g: -15);
+                PrimitivesApp.OnChangeColorKeyDown(g: -15);
             }
             else
             {
-                _primitivesApp.OnChangeColorKeyDown(g: 15);
+                PrimitivesApp.OnChangeColorKeyDown(g: 15);
             }
         }
         else if (args.Key == Key.B)
         {
             if ((Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control)
             {
-                _primitivesApp.OnChangeColorKeyDown(b: -15);
+                PrimitivesApp.OnChangeColorKeyDown(b: -15);
             }
             else
             {
-                _primitivesApp.OnChangeColorKeyDown(b: 15);
+                PrimitivesApp.OnChangeColorKeyDown(b: 15);
             }
         }
         else if (args.Key == Key.OemPlus)
         {
-            _primitivesApp.OnSizeKeyDown(1f);
+            PrimitivesApp.OnSizeKeyDown(1f);
         }
         else if (args.Key == Key.OemMinus)
         {
-            _primitivesApp.OnSizeKeyDown(-1f);
+            PrimitivesApp.OnSizeKeyDown(-1f);
         }
         else if (args.Key == Key.N)
         {
@@ -144,16 +150,16 @@ public partial class MainWindow : Window
         {
             if ((Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control)
             {
-                _primitivesApp.OnCancelActionKeyDown();
+                PrimitivesApp.OnCancelActionKeyDown();
             }
         }
         else if (args.Key == Key.Delete)
         {
-            _primitivesApp.OnDeleteKeyDown();
+            PrimitivesApp.OnDeleteKeyDown();
         }
         else if (args.Key == Key.Escape)
         {
-            _primitivesApp.OnReturnKeyDown();
+            PrimitivesApp.OnReturnKeyDown();
         }
     }
 
@@ -161,128 +167,128 @@ public partial class MainWindow : Window
     {
         gl.MatrixMode(OpenGL.GL_PROJECTION);
         gl.LoadIdentity();
-        gl.Ortho2D(0d, glWindow.ActualWidth, 0d, glWindow.ActualHeight);
+        gl.Ortho2D(0d, GlWindow.ActualWidth, 0d, GlWindow.ActualHeight);
         gl.MatrixMode(OpenGL.GL_MODELVIEW);
         gl.LoadIdentity();
     }
 
     private void AddGroupButton_OnClick(object sender, RoutedEventArgs e)
     {
-        _primitivesApp.OnEnterKeyDown();
+        PrimitivesApp.OnEnterKeyDown();
     }
 
     private void DeleteLastButton_OnClick(object sender, RoutedEventArgs e)
     {
-        _primitivesApp.OnCancelActionKeyDown();
+        PrimitivesApp.OnCancelActionKeyDown();
     }
 
     private void DeleteButton_OnClick(object sender, RoutedEventArgs e)
     {
-        _primitivesApp.OnDeleteKeyDown();
+        PrimitivesApp.OnDeleteKeyDown();
     }
 
     private void PreviousGroupButton_OnClick(object sender, RoutedEventArgs e)
     {
-        _primitivesApp.OnSelectionKeyDown(Key.Left);
+        PrimitivesApp.OnSelectionKeyDown(Key.Left);
     }
 
     private void NextGroupButton_OnClick(object sender, RoutedEventArgs e)
     {
-        _primitivesApp.OnSelectionKeyDown(Key.Right);
+        PrimitivesApp.OnSelectionKeyDown(Key.Right);
     }
 
     private void PreviousPrimitiveButton_OnClick(object sender, RoutedEventArgs e)
     {
-        _primitivesApp.OnSelectionKeyDown(Key.Up);
+        PrimitivesApp.OnSelectionKeyDown(Key.Up);
     }
 
     private void NextPrimitiveButton_OnClick(object sender, RoutedEventArgs e)
     {
-        _primitivesApp.OnSelectionKeyDown(Key.Down);
+        PrimitivesApp.OnSelectionKeyDown(Key.Down);
     }
 
     private void AcceptChangesButton_OnClick(object sender, RoutedEventArgs e)
     {
-        _primitivesApp.OnEnterKeyDown();
+        PrimitivesApp.OnEnterKeyDown();
     }
 
     private void CancelChangesButton_OnClick(object sender, RoutedEventArgs e)
     {
-        _primitivesApp.OnCancelActionKeyDown();
+        PrimitivesApp.OnCancelActionKeyDown();
     }
 
     private void UpButton_OnClick(object sender, RoutedEventArgs e)
     {
-        _primitivesApp.OnMoveKeyDown(0f, 5f);
+        PrimitivesApp.OnMoveKeyDown(0f, 5f);
     }
 
     private void LeftButton_OnClick(object sender, RoutedEventArgs e)
     {
-        _primitivesApp.OnMoveKeyDown(-5f, 0f);
+        PrimitivesApp.OnMoveKeyDown(-5f, 0f);
     }
 
     private void DownButton_OnClick(object sender, RoutedEventArgs e)
     {
-        _primitivesApp.OnMoveKeyDown(0f, -5f);
+        PrimitivesApp.OnMoveKeyDown(0f, -5f);
     }
 
     private void RightButton_OnClick(object sender, RoutedEventArgs e)
     {
-        _primitivesApp.OnMoveKeyDown(5f, 0f);
+        PrimitivesApp.OnMoveKeyDown(5f, 0f);
     }
 
     private void RPlusButton_OnClick(object sender, RoutedEventArgs e)
     {
-        _primitivesApp.OnChangeColorKeyDown(r: 15);
+        PrimitivesApp.OnChangeColorKeyDown(r: 15);
     }
 
     private void RMinusButton_OnClick(object sender, RoutedEventArgs e)
     {
-        _primitivesApp.OnChangeColorKeyDown(r: -15);
+        PrimitivesApp.OnChangeColorKeyDown(r: -15);
     }
 
     private void GPlusButton_OnClick(object sender, RoutedEventArgs e)
     {
-        _primitivesApp.OnChangeColorKeyDown(g: 15);
+        PrimitivesApp.OnChangeColorKeyDown(g: 15);
     }
 
     private void GMinusButton_OnClick(object sender, RoutedEventArgs e)
     {
-        _primitivesApp.OnChangeColorKeyDown(g: -15);
+        PrimitivesApp.OnChangeColorKeyDown(g: -15);
     }
 
     private void BPlusButton_OnClick(object sender, RoutedEventArgs e)
     {
-        _primitivesApp.OnChangeColorKeyDown(b: 15);
+        PrimitivesApp.OnChangeColorKeyDown(b: 15);
     }
 
     private void BMinusButton_OnClick(object sender, RoutedEventArgs e)
     {
-        _primitivesApp.OnChangeColorKeyDown(b: -15);
+        PrimitivesApp.OnChangeColorKeyDown(b: -15);
     }
 
     private void SizePlusButton_OnClick(object sender, RoutedEventArgs e)
     {
-        _primitivesApp.OnSizeKeyDown(1f);
+        PrimitivesApp.OnSizeKeyDown(1f);
     }
 
     private void SizeMinusButton_OnClick(object sender, RoutedEventArgs e)
     {
-        _primitivesApp.OnSizeKeyDown(-1f);
+        PrimitivesApp.OnSizeKeyDown(-1f);
     }
 
     private void PaintingButton_OnClick(object sender, RoutedEventArgs e)
     {
-        _primitivesApp.SetMode(Mode.Painting);
+        PrimitivesApp.SetMode(Mode.Painting);
     }
 
     private void ChangingButton_OnClick(object sender, RoutedEventArgs e)
     {
-        _primitivesApp.SetMode(Mode.Changing);
+        PrimitivesApp.SetMode(Mode.Changing);
     }
 
     private void EscapeButton_OnClick(object sender, RoutedEventArgs e)
     {
-        _primitivesApp.OnReturnKeyDown();
+        PrimitivesApp.OnReturnKeyDown();
     }
 }

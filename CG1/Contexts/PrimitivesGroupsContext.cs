@@ -1,6 +1,9 @@
 ﻿using CG1.Models;
 using CG1.Models.Primitives;
 using System.Collections.Generic;
+using System.Linq;
+using CG1.ViewModels;
+using System.Windows.Forms;
 
 namespace CG1.Contexts;
 
@@ -22,17 +25,30 @@ public class PrimitivesGroupsContext
     public int SelectedPrimitiveIndex { get; private set; } = -1;
 
     private readonly List<PrimitivesGroup> _primitivesGroups = new();
+    private readonly PrimitivesGroupsContextView _contextView;
+
+    public PrimitivesGroupsContext(PrimitivesGroupsContextView contextView)
+    {
+        _contextView = contextView;
+    }
 
     public void AddGroup()
     {
         _primitivesGroups.Add(new PrimitivesGroup());
         SelectedGroupIndex = _primitivesGroups.Count - 1;
+        _contextView.Views.Add(new PrimitivesGroupView(SelectedGroup, SelectedGroupIndex));
+        _contextView.SelectedGroupIndex = SelectedGroupIndex;
         SelectedPrimitiveIndex = -1;
     }
 
     public void RemoveGroupAt(int index)
     {
         if (index < 0 || index > _primitivesGroups.Count) return;
+        _contextView.Views.RemoveAt(index);
+        foreach (var group in _contextView.Views.Skip(index))
+        {
+            group.Index--;
+        }
         _primitivesGroups.RemoveAt(index);
         Unselect();
     }
@@ -41,6 +57,7 @@ public class PrimitivesGroupsContext
     {
         if (_primitivesGroups.Count <= 0) return;
         _primitivesGroups.RemoveAt(_primitivesGroups.Count - 1);
+        _contextView.Views.RemoveAt(_primitivesGroups.Count - 1);
         Unselect();
     }
 
@@ -49,6 +66,7 @@ public class PrimitivesGroupsContext
         if (index < 0 || index > _primitivesGroups.Count) return;
         MakeNonTransparent();
         SelectedGroupIndex = index;
+        _contextView.SelectedGroupIndex = index;
         SelectedPrimitiveIndex = SelectedGroup.Count;
     }
 
@@ -72,6 +90,7 @@ public class PrimitivesGroupsContext
         MakeNonTransparent();
         if (SelectedGroupIndex >= _primitivesGroups.Count - 1) return;
         SelectedGroupIndex++;
+        _contextView.SelectedGroupIndex++;
         SelectedPrimitiveIndex = SelectedGroup.Count;
     }
 
@@ -89,6 +108,7 @@ public class PrimitivesGroupsContext
         MakeNonTransparent();
         if (SelectedGroupIndex <= 0) return;
         SelectedGroupIndex--;
+        _contextView.SelectedGroupIndex--;
         SelectedPrimitiveIndex = SelectedGroup.Count;
     }
 
@@ -96,6 +116,7 @@ public class PrimitivesGroupsContext
     {
         SelectedGroup.Add(primitive);
         SelectedPrimitiveIndex = SelectedGroup.Count;
+        _contextView.SelectedInTableGroup.PrimitivesCount++;
     }
 
     public void RemoveLastPrimitive()
@@ -103,6 +124,7 @@ public class PrimitivesGroupsContext
         if (SelectedGroupIndex < 0) return;
         if (SelectedGroup.Count == 0) return;
         SelectedGroup.RemoveAt(SelectedGroup.Count - 1);
+        _contextView.SelectedInTableGroup.PrimitivesCount--;
         Unselect();
     }
 
@@ -111,6 +133,7 @@ public class PrimitivesGroupsContext
         if (SelectedGroupIndex < 0) return;
         if (index < 0 || index > SelectedGroup.Count) return;
         SelectedGroup.RemoveAt(index);
+        _contextView.SelectedInTableGroup.PrimitivesCount--;
         Unselect();
     }
 
@@ -159,6 +182,7 @@ public class PrimitivesGroupsContext
         MakeNonTransparent();
         SelectedGroupIndex = -1;
         SelectedPrimitiveIndex = -1;
+        _contextView.SelectedGroupIndex = -1;
     }
 
     public void CancelChanges()

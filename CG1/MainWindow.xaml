@@ -6,6 +6,7 @@
         xmlns:sharpGL="clr-namespace:SharpGL.WPF;assembly=SharpGL.WPF"
         xmlns:local="clr-namespace:CG1"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:viewModels="clr-namespace:CG1.ViewModels"
         mc:Ignorable="d"
         KeyDown="GlWindowOnKeyDown"
         Title="Компьютерная графика"
@@ -23,7 +24,7 @@
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
-        <sharpGL:OpenGLControl x:Name="glWindow"
+        <sharpGL:OpenGLControl x:Name="GlWindow"
                                OpenGLDraw="OpenGLDraw"
                                OpenGLInitialized="OpenGLInitialized"
                                Resized="OpenGLControlResized"
