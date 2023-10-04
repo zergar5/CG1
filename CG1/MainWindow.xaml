@@ -5,39 +5,387 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:sharpGL="clr-namespace:SharpGL.WPF;assembly=SharpGL.WPF"
         xmlns:local="clr-namespace:CG1"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
         KeyDown="GlWindowOnKeyDown"
-        Title="MainWindow" Height="540" Width="960" >
-    <Grid>
+        Title="Компьютерная графика"
+        Padding="0"
+        Margin="0"
+        MinHeight="540"       
+        Width="Auto"       
+>
+
+    <Grid Background="#ffdadada">
         <Grid.RowDefinitions>
-            <RowDefinition Height="27*"/>
-            <RowDefinition Height="27*"/>
-            <RowDefinition Height="54*"/>
-            <RowDefinition Height="54*"/>
-            <RowDefinition Height="54*"/>
-            <RowDefinition Height="54*"/>
-            <RowDefinition Height="54*"/>
-            <RowDefinition Height="27*"/>
-            <RowDefinition Height="27*"/>
-            <RowDefinition Height="27*"/>
-            <RowDefinition Height="27*"/>
-            <RowDefinition Height="27*"/>
-            <RowDefinition Height="27*"/>
-            <RowDefinition Height="27*"/>
-            <RowDefinition Height="27*"/>
+            <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="640*"/>
-            <ColumnDefinition Width="65*"/>
-            <ColumnDefinition Width="65*"/>
-            <ColumnDefinition Width="65*"/>
-            <ColumnDefinition Width="65*"/>
-            <ColumnDefinition Width="60*"/>
-
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
-        <sharpGL:OpenGLControl x:Name="glWindow" OpenGLDraw="OpenGLDraw" OpenGLInitialized="OpenGLInitialized" Resized="OpenGLControlResized"
+        <sharpGL:OpenGLControl x:Name="glWindow"
+                               OpenGLDraw="OpenGLDraw"
+                               OpenGLInitialized="OpenGLInitialized"
+                               Resized="OpenGLControlResized"
                                MouseDown="GlWindowOnMouseClick"
                                KeyDown="GlWindowOnKeyDown"
-                               Grid.Column="0" Grid.Row="0" Grid.RowSpan="15"/>
+                               Width="700"
+                               Padding="0"
+                               Margin="0"
+                               Grid.Column="0"
+                               VerticalAlignment="Center"
+                               HorizontalAlignment="Left"
+        />
+        <Border
+            Padding="0"
+            Margin="0"
+            Width="290"
+            Background="white"
+            VerticalAlignment="Top"
+            HorizontalAlignment="Right"
+            Grid.Column="1"
+        >
+            <TabControl>
+                <TabItem>
+                    <TabItem.Header>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock>Creating</TextBlock>
+                        </StackPanel>
+                    </TabItem.Header>
+                    <StackPanel>
+                        <Grid>
+                            <ListView ItemsSource="{DynamicResource ResourceKey=phones}" >
+                                <ListView.View>
+                                    <GridView>
+                                        <GridViewColumn DisplayMemberBinding="{Binding Path=NumberOfGroup}"
+                                                        Width="Auto"                                                        
+                                        >
+                                        №
+                                        </GridViewColumn>
+                                        <GridViewColumn DisplayMemberBinding="{Binding Path=Primitives}"
+                                                        Width="Auto"
+                                        >
+                                        Number of primitives
+                                        </GridViewColumn>
+                                    </GridView>
+                                </ListView.View>
+                                <ListView.Resources>
+
+                                </ListView.Resources>
+                            </ListView>
+                        </Grid>
+                        <Grid Margin="3,3,6,0">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="30"></RowDefinition>
+                                <RowDefinition Height="30"></RowDefinition>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition Width="90"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <Label 
+                                   Content="Group"
+                                   FontSize="16"
+                                   FontWeight="Bold"
+                                   Grid.Column="0"
+                                   Padding="5,0,0,0"
+                                   HorizontalAlignment="Left"
+                                   
+                            />
+                            <TextBlock                                       
+                                       Grid.Column="1"
+                            />
+                            <Button x:Name="PreviousGroupButton"
+                                    Click="PreviousGroupButton_OnClick"
+                                    Content="Prev"
+                                    Focusable="False"
+                                    Grid.Column="2"
+                                    Padding="0"
+                                    Width="40"
+                                    Height="25"
+                                    HorizontalAlignment="Left"
+                            />
+                            <Button x:Name="NextGroupButton"
+                                    Click="NextGroupButton_OnClick"
+                                    Content="Next"
+                                    Focusable="False"
+                                    Grid.Column="2"
+                                    Padding="0"
+                                    Width="40"
+                                    Height="25"
+                                    HorizontalAlignment="Right"
+                            />
+                            <Label 
+                                   Content="Primitive"
+                                   FontSize="16"
+                                   FontWeight="Bold"
+                                   Grid.Column="0"
+                                   Grid.Row="1"
+                                   Padding="5,0,0,0"
+                                   HorizontalAlignment="Left"
+                            />
+                            <TextBlock                                       
+                                       Grid.Column="1"
+                                       Grid.Row="1"
+                            />
+                            <Button x:Name="PreviousPrimitiveButton"
+                                    Click="PreviousPrimitiveButton_OnClick"
+                                    Content="Prev"
+                                    Focusable="False"
+                                    Grid.Row="1"
+                                    Grid.Column="2"
+                                    Padding="0"
+                                    Width="40"
+                                    Height="25"
+                                    HorizontalAlignment="Left"
+                            />
+                            <Button x:Name="NextPrimitiveButton"
+                                    Click="NextPrimitiveButton_OnClick"
+                                    Content="Next"
+                                    Focusable="False"
+                                    Grid.Row="1"
+                                    Grid.Column="2"
+                                    Padding="0"
+                                    Width="40"
+                                    Height="25"
+                                    HorizontalAlignment="Right"
+                            />
+                        </Grid>
+                        <Grid Margin="0,10,0,0">
+                            <Grid.RowDefinitions>
+                                <RowDefinition></RowDefinition>
+                                <RowDefinition></RowDefinition>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <Button x:Name="AddGroupButton"
+                                    Click="AddGroupButton_OnClick"
+                                    Content="Add"
+                                    FontSize="14"
+                                    Width="120"
+                                    Grid.Column="1"                                    
+                                    Margin="0,0,0,10"
+                                    Padding="0"
+                                    Focusable="False"
+                            />
+                            <Button x:Name="DeleteButton"
+                                    Click="DeleteButton_OnClick"
+                                    Content="Delete selected"
+                                    FontSize="14"
+                                    Width="120"
+                                    Grid.Column="0"                                    
+                                    Margin="0,0,0,10"
+                                    Padding="0"
+                                    Focusable="False"
+                                    Style="{StaticResource MaterialDesignOutlinedButton}"
+                            />
+                            <Button x:Name="DeleteLastButton"
+                                    Click="DeleteLastButton_OnClick"
+                                    Content="Delete last prim/group"
+                                    Focusable="False"
+                                    Grid.Row="1"
+                                    Grid.ColumnSpan="2"
+                                    Width="200"
+                            />
+                        </Grid>
+                    </StackPanel>
+                </TabItem>
+                <TabItem>
+                    <TabItem.Header>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Margin="3">Changing</TextBlock>
+                        </StackPanel>
+                    </TabItem.Header>
+                    <StackPanel>
+                        <Grid>
+                            <ListView Name="groupsList"
+                                      ItemsSource="{DynamicResource ResourceKey=group}"
+                            >
+                                <ListView.View>
+                                    <GridView>
+                                        <GridViewColumn DisplayMemberBinding="{Binding Path=NumberOfGroup}"
+                                                        Width="Auto"
+                                                        Header="№"
+                                        >
+                                            
+                                        </GridViewColumn>
+                                        <GridViewColumn DisplayMemberBinding="{Binding Path=Primitives}"
+                                                        Header="Number of primitives"
+                                                        Width="Auto"                                                       
+                                        >                                            
+                                        </GridViewColumn>
+                                    </GridView>
+                                </ListView.View>
+                                <ListView.Resources>
+                                    
+                                </ListView.Resources>
+                            </ListView>
+                        </Grid>
+
+                        <Grid Margin="0,3,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <Label Content="Smooth"
+                                   FontSize="16"
+                                   FontWeight="Bold"
+                                   Padding="5,2,0,0"
+                                   Grid.Column="0"
+                                   HorizontalAlignment="Left"
+                                   Style="{StaticResource MaterialDesignLabel}"
+                            />
+                            <ToggleButton
+                                Grid.Column="2"
+                                HorizontalAlignment="Center"
+                            />
+                        </Grid>
+                        <Grid Margin="0,3,6,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <Label x:Name="SizeLabel"
+                                   Content="Size"
+                                   FontSize="16"
+                                   FontWeight="Bold"
+                                   Grid.Column="0"
+                                   Padding="5,5,0,0"
+                                   HorizontalAlignment="Left"
+                                   Style="{StaticResource MaterialDesignLabel}"
+                            />
+                            <TextBlock x:Name="SizeValue"
+                                       Grid.Column="1"
+                                       FontSize="16"
+                                       FontWeight="Bold"
+                                       HorizontalAlignment="Right"
+                                       Style="{StaticResource MaterialDesignCharacterCounterTextBlock}"
+                            >8</TextBlock>
+                            <Button x:Name="SizePlusButton"
+                                    Content="+"
+                                    Click="SizePlusButton_OnClick"
+                                    Focusable="False"
+                                    Grid.Column="2"
+                                    Padding="0"
+                                    Width="40"
+                                    Height="30"
+                                    HorizontalAlignment="Right"
+                            />
+
+                            <Button x:Name="SizeMinusButton"
+                                    Content="-"
+                                    Click="SizeMinusButton_OnClick"
+                                    Focusable="False"
+                                    Grid.Column="2"
+                                    Padding="0"
+                                    Width="40"
+                                    Height="30"
+                                    HorizontalAlignment="Left"
+                            />
+                        </Grid>
+                        <Grid Margin="0,6,0,0">
+                            <Grid.RowDefinitions>
+                                <RowDefinition></RowDefinition>
+                                <RowDefinition></RowDefinition>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <Button x:Name="UpButton"
+                                    Content="Up"
+                                    Click="UpButton_OnClick"
+                                    Focusable="False"
+                                    Grid.Row="0"
+                                    Grid.Column="1"
+                                    Width="82"
+                                    Margin="0,0,0,10"
+                                    Padding="0"
+                                    Style="{StaticResource MaterialDesignOutlinedButton}"
+                            />
+                            <Button x:Name="LeftButton"
+                                    Content="Left"
+                                    Click="LeftButton_OnClick"
+                                    Focusable="False"
+                                    Grid.Row="1"
+                                    Grid.Column="0"
+                                    Width="82" 
+                                    Padding="0"
+                                    Style="{StaticResource MaterialDesignOutlinedButton}"
+                            />
+                            <Button x:Name="DownButton"
+                                    Content="Down"
+                                    Click="DownButton_OnClick"
+                                    Focusable="False" 
+                                    Grid.Row="1"
+                                    Grid.Column="1"
+                                    Width="82"
+                                    Padding="0"
+                                    Style="{StaticResource MaterialDesignOutlinedButton}"
+                            />
+                            <Button x:Name="RightButton"
+                                    Content="Right"
+                                    Click="RightButton_OnClick"
+                                    Focusable="False"
+                                    Grid.Row="1"
+                                    Grid.Column="2"
+                                    Width="82"
+                                    Padding="0"
+                                    Style="{StaticResource MaterialDesignOutlinedButton}"
+                            />
+                        </Grid>
+                        <Grid Margin="0,10,0,0">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="40"></RowDefinition>
+                                <RowDefinition Height="40"></RowDefinition>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <Button x:Name="AcceptChangesButton"
+                                    Content="Accept"
+                                    FontSize="14"
+                                    Click="AcceptChangesButton_OnClick"
+                                    Height="30"
+                                    Width="120"
+                                    Grid.Row="0"
+                                    Grid.Column="1"
+                                    Padding="0"
+                                    Focusable="False"
+                            />
+                            <Button x:Name="CancelChangesButton"
+                                    Content="Cancel"
+                                    FontSize="14"
+                                    Click="CancelChangesButton_OnClick"
+                                    Height="30"
+                                    Width="120"
+                                    Grid.Row="0"
+                                    Grid.Column="0"
+                                    Padding="0"
+                                    Focusable="False"                                    
+                            />
+                            <Button x:Name="EscapeButton"
+                                    Content="Escape"
+                                    FontSize="14"
+                                    Click="CancelChangesButton_OnClick"
+                                    Height="30"
+                                    Width="120"
+                                    Grid.Row="1"
+                                    Grid.ColumnSpan="2"
+                                    Padding="0"
+                                    Focusable="False"
+                                    Style="{StaticResource MaterialDesignOutlinedButton}"                            
+                            />
+                        </Grid>
+                    </StackPanel>
+                </TabItem>
+            </TabControl>
+        </Border>
     </Grid>
 </Window>
