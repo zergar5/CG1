@@ -10,12 +10,12 @@
         KeyDown="GlWindowOnKeyDown"
         Title="Компьютерная графика"
         Padding="0"
-        Margin="0"
+        Margin="0"        
         MinHeight="540"       
-        Width="Auto"       
+        MinWidth="990"       
 >
 
-    <Grid Background="#ffdadada">
+    <Grid Background="silver" Margin="0">
         <Grid.RowDefinitions>
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
@@ -29,74 +29,74 @@
                                Resized="OpenGLControlResized"
                                MouseDown="GlWindowOnMouseClick"
                                KeyDown="GlWindowOnKeyDown"
-                               Width="700"
+                               MinHeight="560"
+                               MinWidth="700"
                                Padding="0"
                                Margin="0"
                                Grid.Column="0"
-                               Grid.Row="0"
-                               VerticalAlignment="Center"
-                               HorizontalAlignment="Left"
         />
-        <Border
-            Padding="0"
-            Margin="0"
-            Width="290"
-            Background="white"
-            VerticalAlignment="Top"
-            HorizontalAlignment="Right"
-            Grid.Column="1"
-            Grid.Row="0"
-        >
-            <TabControl>
-                <TabItem>
-                    <TabItem.Header>
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock>Creating</TextBlock>
-                        </StackPanel>
-                    </TabItem.Header>
-                    <StackPanel>
-                        <Grid>
-                            <ListView ItemsSource="{DynamicResource ResourceKey=phones}" >
-                                <ListView.View>
-                                    <GridView>
-                                        <GridViewColumn DisplayMemberBinding="{Binding Path=NumberOfGroup}"
+        <StackPanel Width="Auto" Grid.Column="1">
+            <ListView ScrollViewer.VerticalScrollBarVisibility="Auto"
+                      ItemsSource="{DynamicResource ResourceKey=phones}"                      
+                      MaxHeight="300">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn DisplayMemberBinding="{Binding Path=NumberOfGroup}"
                                                         Width="Auto"                                                        
                                         >
-                                        №
-                                        </GridViewColumn>
-                                        <GridViewColumn DisplayMemberBinding="{Binding Path=Primitives}"
+                            №
+                        </GridViewColumn>
+                        <GridViewColumn DisplayMemberBinding="{Binding Path=Primitives}"
                                                         Width="Auto"
                                         >
-                                        Number of primitives
-                                        </GridViewColumn>
-                                    </GridView>
-                                </ListView.View>
-                                <ListView.Resources>
+                            Number of primitives
+                        </GridViewColumn>
+                    </GridView>
+                </ListView.View>
+                <ListView.Resources>
 
-                                </ListView.Resources>
-                            </ListView>
-                        </Grid>
-                        <Grid Margin="3,3,6,0">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="30"></RowDefinition>
-                                <RowDefinition Height="30"></RowDefinition>
-                            </Grid.RowDefinitions>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition></ColumnDefinition>
-                                <ColumnDefinition Width="90"></ColumnDefinition>
-                            </Grid.ColumnDefinitions>
-                            <Label 
+                </ListView.Resources>
+            </ListView>
+            <Border
+                Padding="0"
+                Margin="0"
+                MinHeight="450"
+                Width="290"
+                Background="white"
+                VerticalAlignment="Top"
+                HorizontalAlignment="Right"
+            >
+                <TabControl>
+                    <TabItem>
+                        <TabItem.Header>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock>Creating</TextBlock>
+                            </StackPanel>
+                        </TabItem.Header>
+                        <StackPanel>
+
+                            <Grid Margin="3,3,6,0">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="30"></RowDefinition>
+                                    <RowDefinition Height="30"></RowDefinition>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition></ColumnDefinition>
+                                    <ColumnDefinition Width="90"></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+                                <Label 
                                    Content="Group"
                                    FontSize="16"
                                    FontWeight="Bold"
                                    Grid.Column="0"
                                    Padding="5,0,0,0"
                                    HorizontalAlignment="Left"
+                                   
                             />
-                            <TextBlock                                       
+                                <TextBlock                                       
                                        Grid.Column="1"
                             />
-                            <Button x:Name="PreviousGroupButton"
+                                <Button x:Name="PreviousGroupButton"
                                     Click="PreviousGroupButton_OnClick"
                                     Content="Prev"
                                     Focusable="False"
@@ -106,7 +106,7 @@
                                     Height="25"
                                     HorizontalAlignment="Left"
                             />
-                            <Button x:Name="NextGroupButton"
+                                <Button x:Name="NextGroupButton"
                                     Click="NextGroupButton_OnClick"
                                     Content="Next"
                                     Focusable="False"
@@ -116,7 +116,7 @@
                                     Height="25"
                                     HorizontalAlignment="Right"
                             />
-                            <Label 
+                                <Label 
                                    Content="Primitive"
                                    FontSize="16"
                                    FontWeight="Bold"
@@ -125,11 +125,11 @@
                                    Padding="5,0,0,0"
                                    HorizontalAlignment="Left"
                             />
-                            <TextBlock                                       
+                                <TextBlock                                       
                                        Grid.Column="1"
                                        Grid.Row="1"
                             />
-                            <Button x:Name="PreviousPrimitiveButton"
+                                <Button x:Name="PreviousPrimitiveButton"
                                     Click="PreviousPrimitiveButton_OnClick"
                                     Content="Prev"
                                     Focusable="False"
@@ -140,7 +140,7 @@
                                     Height="25"
                                     HorizontalAlignment="Left"
                             />
-                            <Button x:Name="NextPrimitiveButton"
+                                <Button x:Name="NextPrimitiveButton"
                                     Click="NextPrimitiveButton_OnClick"
                                     Content="Next"
                                     Focusable="False"
@@ -151,17 +151,17 @@
                                     Height="25"
                                     HorizontalAlignment="Right"
                             />
-                        </Grid>
-                        <Grid Margin="0,10,0,0">
-                            <Grid.RowDefinitions>
-                                <RowDefinition></RowDefinition>
-                                <RowDefinition></RowDefinition>
-                            </Grid.RowDefinitions>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition></ColumnDefinition>
-                                <ColumnDefinition></ColumnDefinition>
-                            </Grid.ColumnDefinitions>
-                            <Button x:Name="AddGroupButton"
+                            </Grid>
+                            <Grid Margin="0,10,0,0">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition></RowDefinition>
+                                    <RowDefinition></RowDefinition>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition></ColumnDefinition>
+                                    <ColumnDefinition></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+                                <Button x:Name="AddGroupButton"
                                     Click="AddGroupButton_OnClick"
                                     Content="Add"
                                     FontSize="14"
@@ -171,7 +171,7 @@
                                     Padding="0"
                                     Focusable="False"
                             />
-                            <Button x:Name="DeleteButton"
+                                <Button x:Name="DeleteButton"
                                     Click="DeleteButton_OnClick"
                                     Content="Delete selected"
                                     FontSize="14"
@@ -182,7 +182,7 @@
                                     Focusable="False"
                                     Style="{StaticResource MaterialDesignOutlinedButton}"
                             />
-                            <Button x:Name="DeleteLastButton"
+                                <Button x:Name="DeleteLastButton"
                                     Click="DeleteLastButton_OnClick"
                                     Content="Delete last prim/group"
                                     Focusable="False"
@@ -190,48 +190,23 @@
                                     Grid.ColumnSpan="2"
                                     Width="200"
                             />
-                        </Grid>
-                    </StackPanel>
-                </TabItem>
-                <TabItem>
-                    <TabItem.Header>
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Margin="3">Changing</TextBlock>
+                            </Grid>
                         </StackPanel>
-                    </TabItem.Header>
-                    <StackPanel>
-                        <Grid>
-                            <ListView Name="groupsList"
-                                      ItemsSource="{DynamicResource ResourceKey=group}"
-                            >
-                                <ListView.View>
-                                    <GridView>
-                                        <GridViewColumn DisplayMemberBinding="{Binding Path=NumberOfGroup}"
-                                                        Width="Auto"
-                                                        Header="№"
-                                        >
-                                            
-                                        </GridViewColumn>
-                                        <GridViewColumn DisplayMemberBinding="{Binding Path=Primitives}"
-                                                        Header="Number of primitives"
-                                                        Width="Auto"                                                       
-                                        >                                            
-                                        </GridViewColumn>
-                                    </GridView>
-                                </ListView.View>
-                                <ListView.Resources>
-                                    
-                                </ListView.Resources>
-                            </ListView>
-                        </Grid>
-
-                        <Grid Margin="0,3,0,0">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition></ColumnDefinition>
-                                <ColumnDefinition></ColumnDefinition>
-                                <ColumnDefinition></ColumnDefinition>
-                            </Grid.ColumnDefinitions>
-                            <Label Content="Smooth"
+                    </TabItem>
+                    <TabItem>
+                        <TabItem.Header>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Margin="3">Changing</TextBlock>
+                            </StackPanel>
+                        </TabItem.Header>
+                        <StackPanel>
+                            <Grid Margin="0,3,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition></ColumnDefinition>
+                                    <ColumnDefinition></ColumnDefinition>
+                                    <ColumnDefinition></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+                                <Label Content="Smooth"
                                    FontSize="16"
                                    FontWeight="Bold"
                                    Padding="5,2,0,0"
@@ -239,18 +214,18 @@
                                    HorizontalAlignment="Left"
                                    Style="{StaticResource MaterialDesignLabel}"
                             />
-                            <ToggleButton
+                                <ToggleButton
                                 Grid.Column="2"
                                 HorizontalAlignment="Center"
                             />
-                        </Grid>
-                        <Grid Margin="0,3,6,0">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition></ColumnDefinition>
-                                <ColumnDefinition></ColumnDefinition>
-                                <ColumnDefinition></ColumnDefinition>
-                            </Grid.ColumnDefinitions>
-                            <Label x:Name="SizeLabel"
+                            </Grid>
+                            <Grid Margin="0,3,6,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition></ColumnDefinition>
+                                    <ColumnDefinition></ColumnDefinition>
+                                    <ColumnDefinition></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+                                <Label x:Name="SizeLabel"
                                    Content="Size"
                                    FontSize="16"
                                    FontWeight="Bold"
@@ -259,14 +234,14 @@
                                    HorizontalAlignment="Left"
                                    Style="{StaticResource MaterialDesignLabel}"
                             />
-                            <TextBlock x:Name="SizeValue"
+                                <TextBlock x:Name="SizeValue"
                                        Grid.Column="1"
                                        FontSize="16"
                                        FontWeight="Bold"
                                        HorizontalAlignment="Right"
                                        Style="{StaticResource MaterialDesignCharacterCounterTextBlock}"
                             >8</TextBlock>
-                            <Button x:Name="SizePlusButton"
+                                <Button x:Name="SizePlusButton"
                                     Content="+"
                                     Click="SizePlusButton_OnClick"
                                     Focusable="False"
@@ -277,7 +252,7 @@
                                     HorizontalAlignment="Right"
                             />
 
-                            <Button x:Name="SizeMinusButton"
+                                <Button x:Name="SizeMinusButton"
                                     Content="-"
                                     Click="SizeMinusButton_OnClick"
                                     Focusable="False"
@@ -287,18 +262,18 @@
                                     Height="30"
                                     HorizontalAlignment="Left"
                             />
-                        </Grid>
-                        <Grid Margin="0,6,0,0">
-                            <Grid.RowDefinitions>
-                                <RowDefinition></RowDefinition>
-                                <RowDefinition></RowDefinition>
-                            </Grid.RowDefinitions>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition></ColumnDefinition>
-                                <ColumnDefinition></ColumnDefinition>
-                                <ColumnDefinition></ColumnDefinition>
-                            </Grid.ColumnDefinitions>
-                            <Button x:Name="UpButton"
+                            </Grid>
+                            <Grid Margin="0,6,0,0">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition></RowDefinition>
+                                    <RowDefinition></RowDefinition>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition></ColumnDefinition>
+                                    <ColumnDefinition></ColumnDefinition>
+                                    <ColumnDefinition></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+                                <Button x:Name="UpButton"
                                     Content="Up"
                                     Click="UpButton_OnClick"
                                     Focusable="False"
@@ -309,7 +284,7 @@
                                     Padding="0"
                                     Style="{StaticResource MaterialDesignOutlinedButton}"
                             />
-                            <Button x:Name="LeftButton"
+                                <Button x:Name="LeftButton"
                                     Content="Left"
                                     Click="LeftButton_OnClick"
                                     Focusable="False"
@@ -319,7 +294,7 @@
                                     Padding="0"
                                     Style="{StaticResource MaterialDesignOutlinedButton}"
                             />
-                            <Button x:Name="DownButton"
+                                <Button x:Name="DownButton"
                                     Content="Down"
                                     Click="DownButton_OnClick"
                                     Focusable="False" 
@@ -329,7 +304,7 @@
                                     Padding="0"
                                     Style="{StaticResource MaterialDesignOutlinedButton}"
                             />
-                            <Button x:Name="RightButton"
+                                <Button x:Name="RightButton"
                                     Content="Right"
                                     Click="RightButton_OnClick"
                                     Focusable="False"
@@ -339,17 +314,17 @@
                                     Padding="0"
                                     Style="{StaticResource MaterialDesignOutlinedButton}"
                             />
-                        </Grid>
-                        <Grid Margin="0,10,0,0">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="40"></RowDefinition>
-                                <RowDefinition Height="40"></RowDefinition>
-                            </Grid.RowDefinitions>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition></ColumnDefinition>
-                                <ColumnDefinition></ColumnDefinition>
-                            </Grid.ColumnDefinitions>
-                            <Button x:Name="AcceptChangesButton"
+                            </Grid>
+                            <Grid Margin="0,10,0,0">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="40"></RowDefinition>
+                                    <RowDefinition Height="40"></RowDefinition>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition></ColumnDefinition>
+                                    <ColumnDefinition></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+                                <Button x:Name="AcceptChangesButton"
                                     Content="Accept"
                                     FontSize="14"
                                     Click="AcceptChangesButton_OnClick"
@@ -360,7 +335,7 @@
                                     Padding="0"
                                     Focusable="False"
                             />
-                            <Button x:Name="CancelChangesButton"
+                                <Button x:Name="CancelChangesButton"
                                     Content="Cancel"
                                     FontSize="14"
                                     Click="CancelChangesButton_OnClick"
@@ -371,10 +346,10 @@
                                     Padding="0"
                                     Focusable="False"                                    
                             />
-                            <Button x:Name="EscapeButton"
+                                <Button x:Name="EscapeButton"
                                     Content="Escape"
                                     FontSize="14"
-                                    Click="EscapeButton_OnClick"
+                                    Click="CancelChangesButton_OnClick"
                                     Height="30"
                                     Width="120"
                                     Grid.Row="1"
@@ -383,10 +358,11 @@
                                     Focusable="False"
                                     Style="{StaticResource MaterialDesignOutlinedButton}"                            
                             />
-                        </Grid>
-                    </StackPanel>
-                </TabItem>
-            </TabControl>
-        </Border>
+                            </Grid>
+                        </StackPanel>
+                    </TabItem>
+                </TabControl>
+            </Border>
+        </StackPanel>
     </Grid>
 </Window>
