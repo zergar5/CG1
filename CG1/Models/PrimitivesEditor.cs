@@ -1,4 +1,5 @@
 ﻿using CG1.Models.Primitives;
+using System.Windows.Media;
 
 namespace CG1.Models;
 
@@ -34,6 +35,12 @@ public class PrimitivesEditor
     {
         if (_editingGroup != null) EditingGroup.ChangeColor(a, r, g, b);
         else if (_editingPrimitive != null) EditingPrimitive.ChangeColor(a, r, g, b);
+    }
+
+    public void SetColor(Color color)
+    {
+        if (_editingGroup != null) EditingGroup.SetColor(color);
+        else if (_editingPrimitive != null) EditingPrimitive.SetColor(color);
     }
 
     public void ChangeSize(float size)

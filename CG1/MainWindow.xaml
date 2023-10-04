@@ -149,11 +149,11 @@
                             />
                                 <Button x:Name="DeleteLastButton"
                                     Click="DeleteLastButton_OnClick"
-                                    Content="Delete last prim/group"
+                                    Content="Delete last prim/empty group"
                                     Focusable="False"
                                     Grid.Row="1"
                                     Grid.ColumnSpan="2"
-                                    Width="200"
+                                    Width="225"
                             />
                             </Grid>
                         </StackPanel>
@@ -306,7 +306,7 @@
                                        FontWeight="Bold"
                                        HorizontalAlignment="Right"
                                        Style="{StaticResource MaterialDesignCharacterCounterTextBlock}"
-                            >8</TextBlock>
+                            ></TextBlock>
                                 <Button x:Name="SizePlusButton"
                                     Content="+"
                                     Click="SizePlusButton_OnClick"

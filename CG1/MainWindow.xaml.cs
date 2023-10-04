@@ -5,6 +5,7 @@ using SharpGL.WPF;
 using System.Windows;
 using System.Windows.Input;
 using CG1.ViewModels;
+using System.Windows.Controls;
 
 namespace CG1;
 
@@ -277,38 +278,41 @@ public partial class MainWindow : Window
         PrimitivesApp.OnSizeKeyDown(-1f);
     }
 
-    private void PaintingButton_OnClick(object sender, RoutedEventArgs e)
-    {
-        PrimitivesApp.SetMode(Mode.Painting);
-    }
-
-    private void ChangingButton_OnClick(object sender, RoutedEventArgs e)
-    {
-        PrimitivesApp.SetMode(Mode.Changing);
-    }
-
     private void EscapeButton_OnClick(object sender, RoutedEventArgs e)
     {
+        
         PrimitivesApp.OnReturnKeyDown();
     }
 
     private void ToggleButton_Checked(object sender, RoutedEventArgs e)
     {
-
+        _gl.Enable(OpenGL.GL_POINT_SMOOTH);
+        _gl.Hint(OpenGL.GL_POINT_SMOOTH_HINT, OpenGL.GL_NICEST);
     }
 
     private void ToggleButton_Unchecked(object sender, RoutedEventArgs e)
     {
-
+        _gl.Disable(OpenGL.GL_POINT_SMOOTH);
     }
 
     private void TabControl_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
     {
-
+        var tab = (TabControl)sender;
+        if(tab.SelectedIndex == 0)
+        {
+            PrimitivesApp.SetMode(Mode.Painting);
+            if (PrimitivesApp.CurrentMode == Mode.Changing) tab.SelectedIndex = 1;
+        }
+        else if (tab.SelectedIndex == 1)
+        {
+            PrimitivesApp.SetMode(Mode.Changing);
+            if (PrimitivesApp.CurrentMode == Mode.Painting) tab.SelectedIndex = 0;
+        }
     }
 
     private void ColorPicker_ColorChanged(object sender, RoutedPropertyChangedEventArgs<System.Windows.Media.Color> e)
     {
-
+        var color = e.NewValue;
+        PrimitivesApp.OnColorPickerColorChanged(color);
     }
 }

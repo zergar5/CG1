@@ -11,7 +11,7 @@ public class PrimitivesApp
 {
     private readonly PrimitivesGroupsContext _context;
     private readonly PrimitivesEditor _primitivesEditor;
-    private Mode _currentMode;
+    public Mode CurrentMode { get; private set; }
 
     public PrimitivesApp(PrimitivesGroupsContext context, PrimitivesEditor primitivesEditor)
     {
@@ -30,7 +30,7 @@ public class PrimitivesApp
             if (_context.SelectedPrimitiveIndex == _context.SelectedGroup.Count)
             {
                 _context.SelectedGroup.Highlight(openGL);
-                if (_currentMode == Mode.Changing && _primitivesEditor.EditingGroup != null)
+                if (CurrentMode == Mode.Changing && _primitivesEditor.EditingGroup != null)
                 {
                     _primitivesEditor.EditingGroup.Highlight(openGL);
                     _primitivesEditor.EditingGroup.Draw(openGL);
@@ -39,7 +39,7 @@ public class PrimitivesApp
             else
             {
                 _context.SelectedPrimitive?.Highlight(openGL);
-                if (_currentMode == Mode.Changing && _primitivesEditor.EditingPrimitive != null)
+                if (CurrentMode == Mode.Changing && _primitivesEditor.EditingPrimitive != null)
                 {
                     _primitivesEditor.EditingPrimitive.Highlight(openGL);
                     _primitivesEditor.EditingPrimitive.Draw(openGL);
@@ -60,7 +60,7 @@ public class PrimitivesApp
         var position = args.GetPosition(gl);
         position.Y = gl.ActualHeight - position.Y;
 
-        if (_currentMode == Mode.Painting)
+        if (CurrentMode == Mode.Painting)
         {
             if (_context.Groups.Count == 0)
             {
@@ -74,7 +74,7 @@ public class PrimitivesApp
                 new Point((float)position.X, (float)position.Y, 6, Colors.Red)
             );
         }
-        else if (_currentMode == Mode.Changing)
+        else if (CurrentMode == Mode.Changing)
         {
             _context.SelectPrimitiveAtCursor(position);
             if (_context.SelectedPrimitive != null)
@@ -88,7 +88,7 @@ public class PrimitivesApp
         var position = args.GetPosition(gl);
         position.Y = gl.ActualHeight - position.Y;
 
-        if (_currentMode == Mode.Changing)
+        if (CurrentMode == Mode.Changing)
         {
             _context.SelectGroupAtCursor(position);
             if (_context.SelectedGroup != null)
@@ -100,11 +100,11 @@ public class PrimitivesApp
 
     public void OnEnterKeyDown()
     {
-        if (_currentMode == Mode.Painting)
+        if (CurrentMode == Mode.Painting)
         {
             _context.AddGroup();
         }
-        else if (_currentMode == Mode.Changing)
+        else if (CurrentMode == Mode.Changing)
         {
             if (_primitivesEditor.EditingGroup != null && _context.SelectedGroup != null)
             {
@@ -127,16 +127,16 @@ public class PrimitivesApp
         if (key == Key.Left)
         {
             _context.SelectPreviousGroup();
-            if (_currentMode != Mode.Changing || _context.SelectedGroup == null) return;
+            if (CurrentMode != Mode.Changing || _context.SelectedGroup == null) return;
             _primitivesEditor.StartEditing(_context.SelectedGroup);
         }
         else if (key == Key.Right)
         {
             _context.SelectNextGroup();
-            if (_currentMode != Mode.Changing || _context.SelectedGroup == null) return;
+            if (CurrentMode != Mode.Changing || _context.SelectedGroup == null) return;
             _primitivesEditor.StartEditing(_context.SelectedGroup);
         }
-        else if (_currentMode == Mode.Changing)
+        else if (CurrentMode == Mode.Changing)
         {
             if (key == Key.Up)
             {
@@ -171,7 +171,7 @@ public class PrimitivesApp
 
     public void OnCancelActionKeyDown()
     {
-        if (_currentMode == Mode.Painting)
+        if (CurrentMode == Mode.Painting)
         {
             if (_context.SelectedGroup == null) return;
             if (_context.SelectedGroup.Count > 0)
@@ -180,7 +180,7 @@ public class PrimitivesApp
             }
             else _context.RemoveLastGroup();
         }
-        else if (_currentMode == Mode.Changing)
+        else if (CurrentMode == Mode.Changing)
         {
             _primitivesEditor.CancelChanges();
             _context.CancelChanges();
@@ -205,7 +205,7 @@ public class PrimitivesApp
             _context.RemovePrimitiveAt(_context.SelectedPrimitiveIndex);
         }
 
-        if (_currentMode == Mode.Changing)
+        if (CurrentMode == Mode.Changing)
         {
             _primitivesEditor.StopEditing();
         }
@@ -215,12 +215,20 @@ public class PrimitivesApp
 
     public void OnReturnKeyDown()
     {
-        if (_currentMode == Mode.Changing)
+        if (CurrentMode == Mode.Changing)
         {
             _primitivesEditor.StopEditing();
         }
 
         _context.Unselect();
+    }
+
+    public void OnColorPickerColorChanged(Color color)
+    {
+        if(CurrentMode == Mode.Changing)
+        {
+            _primitivesEditor.SetColor(color);
+        }
     }
 
     public void SetMode(Mode mode)
@@ -232,13 +240,13 @@ public class PrimitivesApp
             if (_context.SelectedGroup != null) _context.SelectGroup(_context.SelectedGroupIndex);
             else if (_context.Groups.Count > 0) _context.SelectGroup(_context.Groups.Count - 1);
             else _context.Unselect();
-            _currentMode = mode;
+            CurrentMode = mode;
         }
         else if (mode == Mode.Changing)
         {
             if (_context.SelectedGroup is not { Count: > 0 }) return;
             _primitivesEditor.StartEditing(_context.SelectedGroup);
-            _currentMode = mode;
+            CurrentMode = mode;
         }
     }
 }

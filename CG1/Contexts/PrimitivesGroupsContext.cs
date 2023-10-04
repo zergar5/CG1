@@ -49,16 +49,17 @@ public class PrimitivesGroupsContext
         {
             group.Index--;
         }
-        _primitivesGroups.RemoveAt(index);
         Unselect();
+        _primitivesGroups.RemoveAt(index);
     }
 
     public void RemoveLastGroup()
     {
         if (_primitivesGroups.Count <= 0) return;
         _primitivesGroups.RemoveAt(_primitivesGroups.Count - 1);
-        _contextView.Views.RemoveAt(_primitivesGroups.Count - 1);
-        Unselect();
+        if (SelectedGroupIndex == _primitivesGroups.Count) SelectedGroupIndex--;
+        if (_primitivesGroups.Count == 0) SelectedGroupIndex = -1;
+        _contextView.Views.RemoveAt(_primitivesGroups.Count);
     }
 
     public void SelectGroup(int index)
@@ -124,8 +125,9 @@ public class PrimitivesGroupsContext
         if (SelectedGroupIndex < 0) return;
         if (SelectedGroup.Count == 0) return;
         SelectedGroup.RemoveAt(SelectedGroup.Count - 1);
+        if (SelectedPrimitiveIndex > SelectedGroup.Count) SelectedPrimitiveIndex = SelectedGroup.Count;
         _contextView.SelectedInTableGroup.PrimitivesCount--;
-        Unselect();
+        
     }
 
     public void RemovePrimitiveAt(int index)
@@ -134,7 +136,6 @@ public class PrimitivesGroupsContext
         if (index < 0 || index > SelectedGroup.Count) return;
         SelectedGroup.RemoveAt(index);
         _contextView.SelectedInTableGroup.PrimitivesCount--;
-        Unselect();
     }
 
     public void SelectPrimitive(int index)

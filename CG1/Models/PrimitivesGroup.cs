@@ -2,6 +2,7 @@
 using SharpGL;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Media;
 using Point = System.Windows.Point;
 
 namespace CG1.Models;
@@ -70,6 +71,14 @@ public class PrimitivesGroup
         foreach (var primitive in _primitives)
         {
             primitive.ChangeColor(a, r, g, b);
+        }
+    }
+
+    public void SetColor(Color color)
+    {
+        foreach (var primitive in _primitives)
+        {
+            primitive.SetColor(color);
         }
     }
 
