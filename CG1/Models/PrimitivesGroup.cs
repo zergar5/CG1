@@ -1,15 +1,21 @@
-﻿using CG1.Core.Primitives;
+﻿using CG1.Models.Primitives;
 using SharpGL;
 using System.Collections.Generic;
 using System.Linq;
 using Point = System.Windows.Point;
 
-namespace CG1.Core;
+namespace CG1.Models;
 
 public class PrimitivesGroup
 {
     private readonly List<IPrimitive> _primitives;
     public int Count => _primitives.Count;
+
+    public int Capacity
+    {
+        get => _primitives.Capacity;
+        set => _primitives.Capacity = value;
+    }
 
     public PrimitivesGroup()
     {
@@ -43,7 +49,7 @@ public class PrimitivesGroup
         }
     }
 
-    public void Move(double x, double y)
+    public void Move(float x, float y)
     {
         foreach (var primitive in _primitives)
         {
@@ -51,7 +57,7 @@ public class PrimitivesGroup
         }
     }
 
-    public void Rotate(double angle)
+    public void Rotate(float angle)
     {
         foreach (var primitive in _primitives)
         {
