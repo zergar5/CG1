@@ -6,6 +6,7 @@
         xmlns:sharpGL="clr-namespace:SharpGL.WPF;assembly=SharpGL.WPF"
         xmlns:local="clr-namespace:CG1"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"  
         xmlns:viewModels="clr-namespace:CG1.ViewModels"
         mc:Ignorable="d"
         KeyDown="GlWindowOnKeyDown"
@@ -257,12 +258,11 @@
                                    HorizontalAlignment="Center"
                                    Style="{StaticResource MaterialDesignLabel}"
                                 />
-                                <materialDesign:ColorPicker
-                                    Grid.Row="1"
-                                    ColorChanged="ColorPicker_OnColorChanged"
-                                >
-
-                                </materialDesign:ColorPicker>
+                                <Grid>
+                                    <xctk:ColorCanvas
+                                        x:Name="_colorCanvas"
+                                        SelectedColorChanged="ColorCanvas_SelectedColorChanged"/>
+                                </Grid>
                             </Grid>
                            
                             <Grid Margin="0,3,0,0">
@@ -301,13 +301,6 @@
                                    HorizontalAlignment="Left"
                                    Style="{StaticResource MaterialDesignLabel}"
                             />
-                                <TextBlock x:Name="SizeValue"
-                                       Grid.Column="1"
-                                       FontSize="16"
-                                       FontWeight="Bold"
-                                       HorizontalAlignment="Right"
-                                       Style="{StaticResource MaterialDesignCharacterCounterTextBlock}"
-                            ></TextBlock>
                                 <Button x:Name="SizePlusButton"
                                     Content="+"
                                     Click="SizePlusButton_OnClick"

@@ -2,6 +2,8 @@
 using CG1.Models.Primitives;
 using SharpGL;
 using SharpGL.WPF;
+using System;
+using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 
@@ -71,7 +73,7 @@ public class PrimitivesApp
                 _context.SelectGroup(_context.Groups.Count - 1);
             }
             _context.AddPrimitive(
-                new Point((float)position.X, (float)position.Y, 6, Colors.Red)
+                new Primitives.Point((float)position.X, (float)position.Y, 6, Colors.Red)
             );
         }
         else if (CurrentMode == Mode.Changing)
@@ -231,7 +233,7 @@ public class PrimitivesApp
 
     public void OnColorPickerColorChanged(Color color)
     {
-        if(CurrentMode == Mode.Changing)
+        if (CurrentMode == Mode.Changing)
         {
             _primitivesEditor.SetColor(color);
         }
@@ -255,4 +257,5 @@ public class PrimitivesApp
             CurrentMode = mode;
         }
     }
+
 }
