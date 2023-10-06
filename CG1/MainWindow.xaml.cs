@@ -313,22 +313,17 @@ public partial class MainWindow : Window
         }
     }
 
-    //private void ColorPicker_OnColorChanged(object sender, RoutedPropertyChangedEventArgs<Color> e)
-    //{
-    //    var colorPicker = (ColorPicker)sender;
-    //    var color = colorPicker.Color;
-    //    PrimitivesApp.OnColorPickerColorChanged(e.NewValue);
-    //}
     private void GroupsTable_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
     {
         var listView = (ListView)sender;
         PrimitivesApp.OnGroupSelected(listView.SelectedIndex);
     }
 
-    private void ColorCanvas_SelectedColorChanged(object sender, RoutedPropertyChangedEventArgs<Color?> e)
+    private void ColorCanvas_OnSelectedColorChanged(object sender, RoutedPropertyChangedEventArgs<Color?> e)
     {
-        var colorCanvas = (ColorCanvas)sender;
-        var color = colorCanvas.SelectedColor;
-        PrimitivesApp.OnColorPickerColorChanged(e.NewValue.Value);
+        if (e.NewValue.HasValue)
+        {
+            PrimitivesApp.OnColorPickerColorChanged((Color)e.NewValue);
+        }
     }
 }

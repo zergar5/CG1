@@ -260,8 +260,8 @@
                                 />
                                 <Grid>
                                     <xctk:ColorCanvas
-                                        x:Name="_colorCanvas"
-                                        SelectedColorChanged="ColorCanvas_SelectedColorChanged"/>
+                                        x:Name="ColorCanvas"
+                                        SelectedColorChanged="ColorCanvas_OnSelectedColorChanged"/>
                                 </Grid>
                             </Grid>
                            

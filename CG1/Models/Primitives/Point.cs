@@ -102,11 +102,10 @@ public class Point : IPrimitive
 
     public void SetColor(Color color)
     {
-        _color = Color;
-        _tA = (short)(_color.A - color.A);
-        _tR = (short)(_color.R - color.R);
-        _tG = (short)(_color.G - color.G);
-        _tB = (short)(_color.B - color.B);
+        _tA = (short)(color.A - _color.A);
+        _tR = (short)(color.R - _color.R);
+        _tG = (short)(color.G - _color.G);
+        _tB = (short)(color.B - _color.B);
     }
 
     public Color GetColor()
