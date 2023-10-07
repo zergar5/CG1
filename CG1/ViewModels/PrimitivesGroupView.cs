@@ -1,6 +1,6 @@
-﻿using System.ComponentModel;
+﻿using CG1.Models;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using CG1.Models;
 
 namespace CG1.ViewModels;
 

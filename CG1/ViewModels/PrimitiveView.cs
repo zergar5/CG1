@@ -1,7 +1,7 @@
-﻿using System.ComponentModel;
+﻿using CG1.Models.Primitives;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Media;
-using CG1.Models.Primitives;
 
 namespace CG1.ViewModels;
 
@@ -30,7 +30,7 @@ public class PrimitiveView : INotifyPropertyChanged
     }
 
     private Color _color;
-    
+
     private IPrimitive _primitive;
     public PrimitiveView(IPrimitive primitive, int index)
     {

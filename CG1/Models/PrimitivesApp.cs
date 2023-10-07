@@ -1,9 +1,6 @@
 ﻿using CG1.Contexts;
-using CG1.Models.Primitives;
 using SharpGL;
 using SharpGL.WPF;
-using System;
-using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 
@@ -48,7 +45,7 @@ public class PrimitivesApp
                 }
             }
         }
-        
+
         foreach (var primitivesGroup in _context.Groups)
         {
             primitivesGroup.Draw(openGL);
@@ -116,7 +113,7 @@ public class PrimitivesApp
             }
             else if (_primitivesEditor.EditingPrimitive != null && _context.SelectedPrimitive != null)
             {
-                _context.Groups[_context.SelectedGroupIndex][_context.SelectedPrimitiveIndex] = 
+                _context.Groups[_context.SelectedGroupIndex][_context.SelectedPrimitiveIndex] =
                     _primitivesEditor.EditingPrimitive;
                 _context.SelectedPrimitive.MakeNonTransparent();
                 _primitivesEditor.StartEditing(_context.SelectedPrimitive);
@@ -144,7 +141,7 @@ public class PrimitivesApp
             {
                 _context.SelectPreviousPrimitive();
                 if (_context.SelectedPrimitive == null) return;
-                
+
                 _primitivesEditor.StartEditing(_context.SelectedPrimitive);
             }
             else if (key == Key.Down)
@@ -227,7 +224,7 @@ public class PrimitivesApp
 
     public void OnGroupSelected(int index)
     {
-        if(_context.SelectedGroupIndex == index) return;
+        if (_context.SelectedGroupIndex == index) return;
         _context.SelectGroup(index);
     }
 

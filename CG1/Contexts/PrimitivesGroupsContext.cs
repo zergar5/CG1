@@ -1,9 +1,8 @@
 ﻿using CG1.Models;
 using CG1.Models.Primitives;
+using CG1.ViewModels;
 using System.Collections.Generic;
 using System.Linq;
-using CG1.ViewModels;
-using System.Windows.Forms;
 
 namespace CG1.Contexts;
 
@@ -127,7 +126,7 @@ public class PrimitivesGroupsContext
         SelectedGroup.RemoveAt(SelectedGroup.Count - 1);
         if (SelectedPrimitiveIndex > SelectedGroup.Count) SelectedPrimitiveIndex = SelectedGroup.Count;
         _contextView.SelectedInTableGroup.PrimitivesCount--;
-        
+
     }
 
     public void RemovePrimitiveAt(int index)

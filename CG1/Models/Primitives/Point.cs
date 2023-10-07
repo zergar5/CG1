@@ -1,7 +1,7 @@
-﻿using System;
-using System.Windows.Media;
-using CG1.Extensions;
+﻿using CG1.Extensions;
 using SharpGL;
+using System;
+using System.Windows.Media;
 
 namespace CG1.Models.Primitives;
 
@@ -180,7 +180,7 @@ public class Point : IPrimitive
             primitive.SetSize(Size);
         }
         else throw new InvalidCastException();
-        
+
         return primitive;
     }
 }

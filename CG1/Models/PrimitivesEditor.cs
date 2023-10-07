@@ -24,7 +24,7 @@ public class PrimitivesEditor
         _editingGroup = primitivesGroup.Clone();
         primitivesGroup.MakeTransparent();
     }
-    
+
     public void Move(float x, float y)
     {
         if (_editingGroup != null) EditingGroup.Move(x, y);

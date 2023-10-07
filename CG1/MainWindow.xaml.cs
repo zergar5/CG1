@@ -1,14 +1,12 @@
 ﻿using CG1.Contexts;
 using CG1.Models;
+using CG1.ViewModels;
 using SharpGL;
 using SharpGL.WPF;
 using System.Windows;
-using System.Windows.Input;
-using CG1.ViewModels;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
-using MaterialDesignThemes.Wpf;
-using Xceed.Wpf.Toolkit;
 
 namespace CG1;
 
@@ -283,7 +281,7 @@ public partial class MainWindow : Window
 
     private void EscapeButton_OnClick(object sender, RoutedEventArgs e)
     {
-        
+
         PrimitivesApp.OnReturnKeyDown();
     }
 
@@ -301,7 +299,7 @@ public partial class MainWindow : Window
     private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
         var tab = (TabControl)sender;
-        if(tab.SelectedIndex == 0)
+        if (tab.SelectedIndex == 0)
         {
             PrimitivesApp.SetMode(Mode.Painting);
             if (PrimitivesApp.CurrentMode == Mode.Changing) tab.SelectedIndex = 1;
