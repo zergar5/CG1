@@ -252,15 +252,7 @@
                                         <RowDefinition></RowDefinition>
                                         <RowDefinition></RowDefinition>
                                     </Grid.RowDefinitions>
-                                    <Label
-                                   Content="Color of primitive"
-                                   FontSize="16"
-                                   FontWeight="Bold"
-                                   Padding="5,2,0,0"
-                                   Grid.Row="0"
-                                   HorizontalAlignment="Center"
-                                   Style="{StaticResource MaterialDesignLabel}"
-                                />
+                                    
                                     <xctk:ColorCanvas
                                         x:Name="ColorCanvas"
                                         Background="white"
